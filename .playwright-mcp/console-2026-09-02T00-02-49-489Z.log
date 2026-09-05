@@ -1,0 +1,108 @@
+[    7825ms] [WARNING] An iframe which has both allow-scripts and allow-same-origin for its sandbox attribute can escape its sandboxing. @ https://dqpnq362acqdi.cloudfront.net/_next/static/chunks/324-9e8109698c6f77ce.js:0
+[    7827ms] [WARNING] An iframe which has both allow-scripts and allow-same-origin for its sandbox attribute can escape its sandboxing. @ https://dqpnq362acqdi.cloudfront.net/_next/static/chunks/324-9e8109698c6f77ce.js:0
+[    8998ms] [WARNING] window.NativeWebBridge already exists @ https://m.media-amazon.com/images/I/51LFWUXHkZL.js:32
+[    9331ms] [WARNING] Unrecognized feature: 'attribution-reporting'. @ https://p.ad.gt/api/v1/p/745:0
+[    9356ms] [WARNING] [Audigent] cannot find __gpp framework @ https://a.ad.gt/api/v1/u/matches/745?_it=amazon:0
+[   10007ms] [ERROR] Failed to load resource: the server responded with a status of 400 () @ https://eb2.3lift.com/getuid?ld=1&gdpr=0&cmp_cs=&us_privacy=&redir=https%3A%2F%2Fmfx.mobilefuse.com%2Fsetuid%3Fpid%3Dtpl%26uid%3D%24UID:0
+[   10117ms] [WARNING] Unrecognized feature: 'attribution-reporting'. @ https://www.googletagservices.com/dcm/impl_v106.js:110
+[   10119ms] [WARNING] Unrecognized feature: 'attribution-reporting'. @ https://www.googletagservices.com/dcm/impl_v106.js:110
+[   10389ms] [ERROR] Failed to load resource: the server responded with a status of 400 () @ https://mfx.mobilefuse.com/setuid?pid=mn&uid=:0
+[   10455ms] [WARNING] Canvas2D: Multiple readback operations using getImageData are faster with the willReadFrequently attribute set to true. See: https://html.spec.whatwg.org/multipage/canvas.html#concept-canvas-will-read-frequently @ https://db187550c7dkf.cloudfront.net/jwplayer-unlimited-8.25.6/jwplayer.js:8
+[   10636ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ https://sync-tb.yrxtam.com/ffb9b365d87c2b3126298b7483e4ddd1.gif?puid=[UID]&redir=https%3A%2F%2Fs.ad.smaato.net%2Fc%2F%3FdspId%3D1519%26dspCookie%3D%24UID%26gdpr%3D0%26gdpr_consent%3D&gdpr=0&gdpr_consent=&coppa=[COPPA]&gpp=[GPP]&gpp_sid=[GPP_SID]:0
+[   10743ms] [ERROR] Failed to load resource: the server responded with a status of 424 (Failed Dependency) @ https://t.adx.opera.com/pub/sync?pubid=pub10101531197440&gdpr=1&gdpr_consent=:0
+[   11073ms] [ERROR] Failed to load resource: net::ERR_HTTP2_SERVER_REFUSED_STREAM @ https://cs.admanmedia.com/73c1e1bfc3bde354d60b80e601ae3914.gif?puid=[UID]&redir=https%3A%2F%2Fonetag-sys.com%2Fmatch%2F%3Fint_id%3D164%26gdpr%3D0%26gdpr_consent%3D%26uid%3D%5BUID%5D&gdpr=0&gdpr_consent=&ccpa=&coppa=:0
+[   11073ms] [ERROR] Failed to load resource: net::ERR_HTTP2_SERVER_REFUSED_STREAM @ https://cs.admanmedia.com/73c1e1bfc3bde354d60b80e601ae3914.gif?puid=[UID]&redir=https%3A%2F%2Fonetag-sys.com%2Fmatch%2F%3Fint_id%3D164%26gdpr%3D0%26gdpr_consent%3D%26uid%3D%5BUID%5D&gdpr=0&gdpr_consent=&ccpa=1NNN&coppa=:0
+[   11073ms] [ERROR] Failed to load resource: net::ERR_HTTP2_SERVER_REFUSED_STREAM @ https://cs.admanmedia.com/sync/minute_media?gdpr=[GDPR]&gdpr_consent=[USER_CONSENT]&redir=https%3A%2F%2Fcs.minutemedia-prebid.com%2Fcs%3Faid%3D21497%26puid%3D%5BUID%5D:0
+[   11736ms] [DIR] SyntaxError @ https://js.ad-score.com/score.min.js?pid=1000925&tt=g:1
+[   13150ms] [ERROR] Failed to load resource: the server responded with a status of 400 () @ https://mfx.mobilefuse.com/setuid?pid=brv&uid=:0
+[   13150ms] [ERROR] Failed to load resource: the server responded with a status of 400 () @ https://mfx.mobilefuse.com/setuid?pid=brv&uid=:0
+[   14998ms] [WARNING] Unrecognized feature: 'attribution-reporting'. @ https://p.ad.gt/api/v1/p/745:0
+[   15204ms] [WARNING] An iframe which has both allow-scripts and allow-same-origin for its sandbox attribute can escape its sandboxing. @ https://dqpnq362acqdi.cloudfront.net/_next/static/chunks/324-9e8109698c6f77ce.js:0
+[   15205ms] [WARNING] An iframe which has both allow-scripts and allow-same-origin for its sandbox attribute can escape its sandboxing. @ https://dqpnq362acqdi.cloudfront.net/_next/static/chunks/324-9e8109698c6f77ce.js:0
+[   15748ms] [WARNING] [Audigent] cannot find __gpp framework @ https://a.ad.gt/api/v1/u/matches/745?_it=amazon:0
+[   16009ms] [WARNING] Unrecognized feature: 'attribution-reporting'. @ https://www.googletagservices.com/dcm/impl_v106.js:110
+[   16009ms] [WARNING] Unrecognized feature: 'attribution-reporting'. @ https://www.googletagservices.com/dcm/impl_v106.js:110
+[   16020ms] [WARNING] Unrecognized feature: 'attribution-reporting'. @ https://www.googletagservices.com/dcm/impl_v106.js:110
+[   16009ms] [WARNING] Unrecognized feature: 'attribution-reporting'. @ https://www.googletagservices.com/dcm/impl_v106.js:110
+[   16020ms] [WARNING] Unrecognized feature: 'attribution-reporting'. @ https://www.googletagservices.com/dcm/impl_v106.js:110
+[   16009ms] [WARNING] Unrecognized feature: 'attribution-reporting'. @ https://www.googletagservices.com/dcm/impl_v106.js:110
+[   16020ms] [WARNING] Unrecognized feature: 'attribution-reporting'. @ https://www.googletagservices.com/dcm/impl_v106.js:110
+[   16029ms] [WARNING] window.NativeWebBridge already exists @ https://m.media-amazon.com/images/I/51LFWUXHkZL.js:32
+[   16031ms] [WARNING] Unrecognized feature: 'attribution-reporting'. @ https://www.googletagservices.com/dcm/impl_v106.js:110
+[   16038ms] [WARNING] Unrecognized feature: 'attribution-reporting'. @ https://www.googletagservices.com/dcm/impl_v106.js:110
+[   18897ms] [ERROR] Access to fetch at 'https://www.amazon.com/ax/sso/redirect?mode=eager&return_url=https%3A%2F%2Fwww.imdb.com%2Fapi%2F_ajax%2Fmetrics%2Fops%2F%3F_ssoLoop%3D1&signin_url=https%3A%2F%2Fwww.amazon.com%2Fap%2Fsignin%3Fopenid.pape.max_auth_age%3D31536000%26openid.return_to%3Dhttps%253A%252F%252Fwww.imdb.com%252Fregistration%252Fap-signin-handler%252Fimdb_sso_server_amazon%252F%253FclientData%253DeyJvcGVuaWQuYXNzb2NfaGFuZGxlIjoiaW1kYl9zc29fc2VydmVyX2FtYXpvbiIsInJlZGlyZWN0VG8iOiJodHRwczovL3d3dy5pbWRiLmNvbS9hcGkvX2FqYXgvbWV0cmljcy9vcHMvP19zc29Mb29wPTEiLCJsb2dpbkNvbnRleHQiOiI2MmFhNGUzMi0yNzc3LTRkY2EtOGM4ZS02OGVkNjM2ZjJhMjQifQ%2526_ssoLoop%253D1%26openid.identity%3Dhttp%253A%252F%252Fspecs.openid.net%252Fauth%252F2.0%252Fidentifier_select%26openid.assoc_handle%3Dimdb_sso_server_amazon%26openid.mode%3Dcheckid_immediate%26siteState%3D130-4357161-0651955%26language%3Den_US%26openid.claimed_id%3Dhttp%253A%252F%252Fspecs.openid.net%252Fauth%252F2.0%252Fidentifier_select%26openid.ns%3Dhttp%253A%252F%252Fspecs.openid.net%252Fauth%252F2.0' (redirected from 'https://www.imdb.com/api/_ajax/metrics/ops/') from origin 'https://www.imdb.com' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource. @ https://www.imdb.com/title/tt34866681/?ref_=nv_sr_srsg_0_tt_7_nm_1_in_0_q_lucky:0
+[   18897ms] [ERROR] Failed to load resource: net::ERR_FAILED @ https://www.amazon.com/ax/sso/redirect?mode=eager&return_url=https%3A%2F%2Fwww.imdb.com%2Fapi%2F_ajax%2Fmetrics%2Fops%2F%3F_ssoLoop%3D1&signin_url=https%3A%2F%2Fwww.amazon.com%2Fap%2Fsignin%3Fopenid.pape.max_auth_age%3D31536000%26openid.return_to%3Dhttps%253A%252F%252Fwww.imdb.com%252Fregistration%252Fap-signin-handler%252Fimdb_sso_server_amazon%252F%253FclientData%253DeyJvcGVuaWQuYXNzb2NfaGFuZGxlIjoiaW1kYl9zc29fc2VydmVyX2FtYXpvbiIsInJlZGlyZWN0VG8iOiJodHRwczovL3d3dy5pbWRiLmNvbS9hcGkvX2FqYXgvbWV0cmljcy9vcHMvP19zc29Mb29wPTEiLCJsb2dpbkNvbnRleHQiOiI2MmFhNGUzMi0yNzc3LTRkY2EtOGM4ZS02OGVkNjM2ZjJhMjQifQ%2526_ssoLoop%253D1%26openid.identity%3Dhttp%253A%252F%252Fspecs.openid.net%252Fauth%252F2.0%252Fidentifier_select%26openid.assoc_handle%3Dimdb_sso_server_amazon%26openid.mode%3Dcheckid_immediate%26siteState%3D130-4357161-0651955%26language%3Den_US%26openid.claimed_id%3Dhttp%253A%252F%252Fspecs.openid.net%252Fauth%252F2.0%252Fidentifier_select%26openid.ns%3Dhttp%253A%252F%252Fspecs.openid.net%252Fauth%252F2.0:0
+[   16009ms] [WARNING] Unrecognized feature: 'attribution-reporting'. @ https://www.googletagservices.com/dcm/impl_v106.js:110
+[   16020ms] [WARNING] Unrecognized feature: 'attribution-reporting'. @ https://www.googletagservices.com/dcm/impl_v106.js:110
+[   16031ms] [WARNING] Unrecognized feature: 'attribution-reporting'. @ https://www.googletagservices.com/dcm/impl_v106.js:110
+[   16038ms] [WARNING] Unrecognized feature: 'attribution-reporting'. @ https://www.googletagservices.com/dcm/impl_v106.js:110
+[   38502ms] [WARNING] Unrecognized feature: 'attribution-reporting'. @ https://www.googletagservices.com/dcm/impl_v106.js:110
+[   16009ms] [WARNING] Unrecognized feature: 'attribution-reporting'. @ https://www.googletagservices.com/dcm/impl_v106.js:110
+[   16020ms] [WARNING] Unrecognized feature: 'attribution-reporting'. @ https://www.googletagservices.com/dcm/impl_v106.js:110
+[   16031ms] [WARNING] Unrecognized feature: 'attribution-reporting'. @ https://www.googletagservices.com/dcm/impl_v106.js:110
+[   16038ms] [WARNING] Unrecognized feature: 'attribution-reporting'. @ https://www.googletagservices.com/dcm/impl_v106.js:110
+[   38502ms] [WARNING] Unrecognized feature: 'attribution-reporting'. @ https://www.googletagservices.com/dcm/impl_v106.js:110
+[   16009ms] [WARNING] Unrecognized feature: 'attribution-reporting'. @ https://www.googletagservices.com/dcm/impl_v106.js:110
+[   16020ms] [WARNING] Unrecognized feature: 'attribution-reporting'. @ https://www.googletagservices.com/dcm/impl_v106.js:110
+[   16031ms] [WARNING] Unrecognized feature: 'attribution-reporting'. @ https://www.googletagservices.com/dcm/impl_v106.js:110
+[   16038ms] [WARNING] Unrecognized feature: 'attribution-reporting'. @ https://www.googletagservices.com/dcm/impl_v106.js:110
+[   38502ms] [WARNING] Unrecognized feature: 'attribution-reporting'. @ https://www.googletagservices.com/dcm/impl_v106.js:110
+[   38517ms] [WARNING] Unrecognized feature: 'attribution-reporting'. @ https://www.googletagservices.com/dcm/impl_v106.js:110
+[   16009ms] [WARNING] Unrecognized feature: 'attribution-reporting'. @ https://www.googletagservices.com/dcm/impl_v106.js:110
+[   16020ms] [WARNING] Unrecognized feature: 'attribution-reporting'. @ https://www.googletagservices.com/dcm/impl_v106.js:110
+[   16031ms] [WARNING] Unrecognized feature: 'attribution-reporting'. @ https://www.googletagservices.com/dcm/impl_v106.js:110
+[   16038ms] [WARNING] Unrecognized feature: 'attribution-reporting'. @ https://www.googletagservices.com/dcm/impl_v106.js:110
+[   38502ms] [WARNING] Unrecognized feature: 'attribution-reporting'. @ https://www.googletagservices.com/dcm/impl_v106.js:110
+[   38517ms] [WARNING] Unrecognized feature: 'attribution-reporting'. @ https://www.googletagservices.com/dcm/impl_v106.js:110
+[   38526ms] [WARNING] Unrecognized feature: 'attribution-reporting'. @ https://www.googletagservices.com/dcm/impl_v106.js:110
+[   38534ms] [WARNING] Unrecognized feature: 'attribution-reporting'. @ https://www.googletagservices.com/dcm/impl_v106.js:110
+[   16009ms] [WARNING] Unrecognized feature: 'attribution-reporting'. @ https://www.googletagservices.com/dcm/impl_v106.js:110
+[   16020ms] [WARNING] Unrecognized feature: 'attribution-reporting'. @ https://www.googletagservices.com/dcm/impl_v106.js:110
+[   16031ms] [WARNING] Unrecognized feature: 'attribution-reporting'. @ https://www.googletagservices.com/dcm/impl_v106.js:110
+[   16038ms] [WARNING] Unrecognized feature: 'attribution-reporting'. @ https://www.googletagservices.com/dcm/impl_v106.js:110
+[   38502ms] [WARNING] Unrecognized feature: 'attribution-reporting'. @ https://www.googletagservices.com/dcm/impl_v106.js:110
+[   38517ms] [WARNING] Unrecognized feature: 'attribution-reporting'. @ https://www.googletagservices.com/dcm/impl_v106.js:110
+[   38526ms] [WARNING] Unrecognized feature: 'attribution-reporting'. @ https://www.googletagservices.com/dcm/impl_v106.js:110
+[   38534ms] [WARNING] Unrecognized feature: 'attribution-reporting'. @ https://www.googletagservices.com/dcm/impl_v106.js:110
+[   16009ms] [WARNING] Unrecognized feature: 'attribution-reporting'. @ https://www.googletagservices.com/dcm/impl_v106.js:110
+[   16020ms] [WARNING] Unrecognized feature: 'attribution-reporting'. @ https://www.googletagservices.com/dcm/impl_v106.js:110
+[   16031ms] [WARNING] Unrecognized feature: 'attribution-reporting'. @ https://www.googletagservices.com/dcm/impl_v106.js:110
+[   16038ms] [WARNING] Unrecognized feature: 'attribution-reporting'. @ https://www.googletagservices.com/dcm/impl_v106.js:110
+[   38502ms] [WARNING] Unrecognized feature: 'attribution-reporting'. @ https://www.googletagservices.com/dcm/impl_v106.js:110
+[   38517ms] [WARNING] Unrecognized feature: 'attribution-reporting'. @ https://www.googletagservices.com/dcm/impl_v106.js:110
+[   38526ms] [WARNING] Unrecognized feature: 'attribution-reporting'. @ https://www.googletagservices.com/dcm/impl_v106.js:110
+[   38534ms] [WARNING] Unrecognized feature: 'attribution-reporting'. @ https://www.googletagservices.com/dcm/impl_v106.js:110
+[   16009ms] [WARNING] Unrecognized feature: 'attribution-reporting'. @ https://www.googletagservices.com/dcm/impl_v106.js:110
+[   16020ms] [WARNING] Unrecognized feature: 'attribution-reporting'. @ https://www.googletagservices.com/dcm/impl_v106.js:110
+[   16031ms] [WARNING] Unrecognized feature: 'attribution-reporting'. @ https://www.googletagservices.com/dcm/impl_v106.js:110
+[   16038ms] [WARNING] Unrecognized feature: 'attribution-reporting'. @ https://www.googletagservices.com/dcm/impl_v106.js:110
+[   38502ms] [WARNING] Unrecognized feature: 'attribution-reporting'. @ https://www.googletagservices.com/dcm/impl_v106.js:110
+[   38517ms] [WARNING] Unrecognized feature: 'attribution-reporting'. @ https://www.googletagservices.com/dcm/impl_v106.js:110
+[   38526ms] [WARNING] Unrecognized feature: 'attribution-reporting'. @ https://www.googletagservices.com/dcm/impl_v106.js:110
+[   38534ms] [WARNING] Unrecognized feature: 'attribution-reporting'. @ https://www.googletagservices.com/dcm/impl_v106.js:110
+[   16009ms] [WARNING] Unrecognized feature: 'attribution-reporting'. @ https://www.googletagservices.com/dcm/impl_v106.js:110
+[   16020ms] [WARNING] Unrecognized feature: 'attribution-reporting'. @ https://www.googletagservices.com/dcm/impl_v106.js:110
+[   16031ms] [WARNING] Unrecognized feature: 'attribution-reporting'. @ https://www.googletagservices.com/dcm/impl_v106.js:110
+[   16038ms] [WARNING] Unrecognized feature: 'attribution-reporting'. @ https://www.googletagservices.com/dcm/impl_v106.js:110
+[   38502ms] [WARNING] Unrecognized feature: 'attribution-reporting'. @ https://www.googletagservices.com/dcm/impl_v106.js:110
+[   38517ms] [WARNING] Unrecognized feature: 'attribution-reporting'. @ https://www.googletagservices.com/dcm/impl_v106.js:110
+[   38526ms] [WARNING] Unrecognized feature: 'attribution-reporting'. @ https://www.googletagservices.com/dcm/impl_v106.js:110
+[   38534ms] [WARNING] Unrecognized feature: 'attribution-reporting'. @ https://www.googletagservices.com/dcm/impl_v106.js:110
+[   58615ms] [WARNING] Unrecognized feature: 'attribution-reporting'. @ https://www.googletagservices.com/dcm/impl_v106.js:110
+[   58621ms] [WARNING] Unrecognized feature: 'attribution-reporting'. @ https://www.googletagservices.com/dcm/impl_v106.js:110
+[   58624ms] [WARNING] Unrecognized feature: 'attribution-reporting'. @ https://www.googletagservices.com/dcm/impl_v106.js:110
+[   58626ms] [WARNING] Unrecognized feature: 'attribution-reporting'. @ https://www.googletagservices.com/dcm/impl_v106.js:110
+[   70695ms] [WARNING] An iframe which has both allow-scripts and allow-same-origin for its sandbox attribute can escape its sandboxing. @ https://dqpnq362acqdi.cloudfront.net/_next/static/chunks/324-9e8109698c6f77ce.js:0
+[   70697ms] [WARNING] An iframe which has both allow-scripts and allow-same-origin for its sandbox attribute can escape its sandboxing. @ https://dqpnq362acqdi.cloudfront.net/_next/static/chunks/324-9e8109698c6f77ce.js:0
+[   71284ms] [WARNING] window.NativeWebBridge already exists @ https://m.media-amazon.com/images/I/51LFWUXHkZL.js:32
+[   71446ms] [WARNING] Canvas2D: Multiple readback operations using getImageData are faster with the willReadFrequently attribute set to true. See: https://html.spec.whatwg.org/multipage/canvas.html#concept-canvas-will-read-frequently @ https://db187550c7dkf.cloudfront.net/jwplayer-unlimited-8.25.6/jwplayer.js:8
+[  525103ms] [WARNING] Error with Permissions-Policy header: Unrecognized feature: 'attribution-reporting'. @ :0
+[  526735ms] [INFO] Banner not shown: beforeinstallpromptevent.preventDefault() called. The page must call beforeinstallpromptevent.prompt() to show the banner. @ https://www.instagram.com/itsmenowzoe:0
+[  526983ms] [LOG] 
+%cStop! font-family:helvetica; font-size:20px; font-size:50px; font-weight:bold; color:red; -webkit-text-stroke:1px black; @ https://static.cdninstagram.com/rsrc.php/v4iIEX4/yF/l/en_US/QA6Zt7QceIzDb4W7HM591xpdwfzkFfKMB_EopaP35bcFrHitZAvj-2yUrhQ26PK4-jTYrXMbbspbIgF8NNeY8sXR.js:138
+[  526983ms] [LOG] 
+%cThis is a browser feature intended for developers. If someone told you to copy-paste something here to enable an Instagram feature or "hack" someone's account, it is a scam and will give them access to your Instagram account. font-family:helvetica; font-size:20px;  @ https://static.cdninstagram.com/rsrc.php/v4iIEX4/yF/l/en_US/QA6Zt7QceIzDb4W7HM591xpdwfzkFfKMB_EopaP35bcFrHitZAvj-2yUrhQ26PK4-jTYrXMbbspbIgF8NNeY8sXR.js:138
+[  526983ms] [LOG] 
+%cSee https://www.facebook.com/selfxss for more information. font-family:helvetica; font-size:20px;  @ https://static.cdninstagram.com/rsrc.php/v4iIEX4/yF/l/en_US/QA6Zt7QceIzDb4W7HM591xpdwfzkFfKMB_EopaP35bcFrHitZAvj-2yUrhQ26PK4-jTYrXMbbspbIgF8NNeY8sXR.js:138
+[  526983ms] [LOG] 
+%c  @ https://static.cdninstagram.com/rsrc.php/v4iIEX4/yF/l/en_US/QA6Zt7QceIzDb4W7HM591xpdwfzkFfKMB_EopaP35bcFrHitZAvj-2yUrhQ26PK4-jTYrXMbbspbIgF8NNeY8sXR.js:138

@@ -1,0 +1,26 @@
+[      39ms] [ERROR] Failed to load resource: the server responded with a status of 400 () @ https://teams.public.onecdn.static.microsoft/favicon.ico:0
+[    2465ms] [LOG] 
+%cWarning!%c
+Use of this tool exposes you to potential security threats which can result in others gaining access to your personal Office 365 data (documents, emails, conversations and more). Make sure you trust the person or organization that asked you to access this tool before proceeding.
+
+Learn more here: https://technet.microsoft.com/en-us/library/bb794823.aspx
+
+ font-size:70px;font-family:Helvetica,Arial,sans-serif;font-weight:700;color:red;-webkit-text-stroke:2px black font-size:15px;font-family:Helvetica,Arial,sans-serif;font-weight:700 @ https://res.public.onecdn.static.microsoft/files/sp-client/sp-pages-assembly_1_en-us_4245187889b4471ec107ffbbf732223a.js:235
+[    2628ms] [LOG] Session ID: 890538a2-c0c8-1000-b84a-3358f03fb622 @ https://res.public.onecdn.static.microsoft/files/sp-client/sp-pages-assembly_1_en-us_4245187889b4471ec107ffbbf732223a.js:93
+[    2629ms] [LOG] Time in UTC:  Fri, 04 Sep 2026 20:45:58 GMT @ https://res.public.onecdn.static.microsoft/files/sp-client/sp-pages-assembly_1_en-us_4245187889b4471ec107ffbbf732223a.js:93
+[    2651ms] [LOG] Bootstrapper versionOverride :  ecsVersion : undefined preferredVersion : 1.20260630.1.0 cachedVersion : undefined @ https://res.public.onecdn.static.microsoft/files/sp-client/chunk.2680_none_3b24247a89d5b61c6dda.js:0
+[    2651ms] [LOG] Downloading bootstrapper version 1.20260630.1.0. @ https://res.public.onecdn.static.microsoft/files/sp-client/chunk.2680_none_3b24247a89d5b61c6dda.js:0
+[    2867ms] [LOG] Setting webpack public path to: https://res.cdn.office.net/midgard/versionless/ @ https://res.cdn.office.net/midgard/1.20260630.1.0/search-page-bootstrapper-standby.js:0
+[    2867ms] [LOG] Caching bootstrapper version 1.20260630.1.0. @ https://res.public.onecdn.static.microsoft/files/sp-client/chunk.2680_none_3b24247a89d5b61c6dda.js:0
+[    3124ms] [LOG] EVENT:onInit=https://microsoft.sharepoint.com/teams/MyTravel @ https://public-cdn.sharepointonline.com/microsoft.sharepoint.com/sites/catalog/ClientSideAssets/5557cabc-0784-4da1-b64b-224d2cfa295f/infra-agent-application-customizer_d9ef32a1999ca7660d38f6d3061d28cc.js:0
+[    3124ms] [LOG] NAVIGATED EVENT: https://microsoft.sharepoint.com/teams/MyTravel @ https://public-cdn.sharepointonline.com/microsoft.sharepoint.com/sites/catalog/ClientSideAssets/5557cabc-0784-4da1-b64b-224d2cfa295f/infra-agent-application-customizer_d9ef32a1999ca7660d38f6d3061d28cc.js:0
+[    4838ms] [WARNING] invalid contentSourceFilter config @ https://res.cdn.office.net/midgard/versionless/prefetch_c2242308.js:0
+[    4838ms] [LOG] Bootstrapper cached version 1.20260630.1.0 but requested for ECS version 1.20260816.13.0. @ https://res.public.onecdn.static.microsoft/files/sp-client/chunk.2680_none_3b24247a89d5b61c6dda.js:0
+[    4838ms] [LOG] Downloading bootstrapper version 1.20260816.13.0. @ https://res.public.onecdn.static.microsoft/files/sp-client/chunk.2680_none_3b24247a89d5b61c6dda.js:0
+[    4961ms] [LOG] Setting webpack public path to: https://res.cdn.office.net/midgard/versionless/ @ https://res.cdn.office.net/midgard/1.20260816.13.0/search-page-bootstrapper-standby.js:0
+[    4961ms] [LOG] Caching bootstrapper version 1.20260816.13.0. @ https://res.public.onecdn.static.microsoft/files/sp-client/chunk.2680_none_3b24247a89d5b61c6dda.js:0
+[    5065ms] [WARNING] Some icons were re-registered. Applications should only call registerIcons for any given icon once. Redefining what an icon is may have unintended consequences. Duplicates include: 
+GlobalNavButton, ChevronDown, ChevronUp, Edit, Add, Cancel, More, Settings, Mail, Filter (+ 1756 more) @ https://public-cdn.sharepointonline.com/microsoft.sharepoint.com/sites/catalog/ClientSideAssets/870b45ec-a169-44a4-bbd8-72771cd04cd9/alerts-and-announcements-extension-application-customizer_52b6f8a2740910daccf2.js:1
+[    5248ms] [LOG] NAVIGATED EVENT: loading tracking scripts @ https://public-cdn.sharepointonline.com/microsoft.sharepoint.com/sites/catalog/ClientSideAssets/5557cabc-0784-4da1-b64b-224d2cfa295f/infra-agent-application-customizer_d9ef32a1999ca7660d38f6d3061d28cc.js:0
+[   10245ms] [ERROR] Failed to load resource: the server responded with a status of 403 () @ https://microsoft.sharepoint.com/teams/MyTravel/_api/web/ActivityLogger/LogActivity:0
+[  249721ms] [WARNING] A speculation rule set was inserted into the document but will be ignored. This might happen, for example, if it was previously inserted into another document, or if it was created using the innerHTML setter. @ https://www.google.com/search?q=jason+etcobitch&rlz=1C5GCCM_en&oq=jason+etcobitch&gs_lcrp=EgZjaHJvbWUyBggAEEUYOTIHCAEQIRigATIHCAIQIRigATIHCAMQIRigAdIBCDM4MThqMGo0qAIAsAIB&sourceid=chrome&source=chrome.ob&ie=UTF-8:36

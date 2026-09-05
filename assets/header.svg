@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 120" width="600" height="120" role="img" aria-label="133713">
+  <defs>
+    <!-- userSpaceOnUse + spreadMethod=repeat so the translate animation below
+         loops seamlessly, instead of shoving the gradient out of view -->
+    <linearGradient id="rainbow" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="240" y2="0" spreadMethod="repeat">
+      <stop offset="0%"    stop-color="#ff1361"/>
+      <stop offset="16.6%" stop-color="#ff8a00"/>
+      <stop offset="33.3%" stop-color="#ffe600"/>
+      <stop offset="50%"   stop-color="#39ff6a"/>
+      <stop offset="66.6%" stop-color="#00d4ff"/>
+      <stop offset="83.3%" stop-color="#7a4dff"/>
+      <stop offset="100%"  stop-color="#ff1361"/>
+      <animateTransform attributeName="gradientTransform" type="translate"
+        from="0 0" to="-240 0" dur="2.4s" repeatCount="indefinite"/>
+    </linearGradient>
+    <filter id="glow" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="7" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  <text x="50%" y="50%" dy=".35em" text-anchor="middle" filter="url(#glow)"
+        font-family="'Segoe UI', Helvetica, Arial, sans-serif"
+        font-size="72" font-weight="800" fill="url(#rainbow)">133713</text>
+</svg>

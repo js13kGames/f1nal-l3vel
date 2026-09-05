@@ -1,0 +1,45 @@
+[     690ms] [LOG] 10 CDN assets loaded OK @ https://github-grid.enterprise.slack.com/?redir=%2Fr-t12348411142%3Fredir%3D%252Farchives%252FC01AK2D831R%252Fp1788274718434579%253Fname%253DC01AK2D831R%2526perma%253D1788274718434579:144
+[     698ms] [INFO] Sep-01 09:29:21.864 [TRACER] Tracing is not sampled by default for this session. @ https://a.slack-edge.com/bv1-13-br/enterprise-signin-core.3a4333c68e2b0e98.primer.min.js:143
+[     701ms] [WARNING] Sep-01 09:29:21.867 TELEMETRY You tried to get a team-specific telemeter but didn’t provide enough context and are getting the generic telemeter instead which is likely not what you want. @ https://a.slack-edge.com/bv1-13-br/enterprise-signin-core.3a4333c68e2b0e98.primer.min.js:143
+[     725ms] [WARNING] Sep-01 09:29:21.891 TRACES You tried to get a team-specific tracer but didn’t provide enough context and are getting the generic tracer instead which is likely not what you want. @ https://a.slack-edge.com/bv1-13-br/enterprise-signin-core.3a4333c68e2b0e98.primer.min.js:143
+[     726ms] [WARNING] Sep-01 09:29:21.892 TRACES You tried to get a team-specific tracer but didn’t provide enough context and are getting the generic tracer instead which is likely not what you want. @ https://a.slack-edge.com/bv1-13-br/enterprise-signin-core.3a4333c68e2b0e98.primer.min.js:143
+[     726ms] [INFO] Sep-01 09:29:21.892 [API-Q] (T00000000) noversion-1788280161.891 signin.findWorkspaces called with reason: get_started_already_signed_into @ https://a.slack-edge.com/bv1-13-br/enterprise-signin-core.3a4333c68e2b0e98.primer.min.js:143
+[     726ms] [INFO] Sep-01 09:29:21.892 [API-Q] (T00000000) noversion-1788280161.891 signin.findWorkspaces is ENQUEUED @ https://a.slack-edge.com/bv1-13-br/enterprise-signin-core.3a4333c68e2b0e98.primer.min.js:143
+[     852ms] [INFO] Sep-01 09:29:22.019 [API-Q] (T00000000) noversion-1788280161.891 signin.findWorkspaces is ACTIVE @ https://a.slack-edge.com/bv1-13-br/enterprise-signin-core.3a4333c68e2b0e98.primer.min.js:143
+[    1117ms] [INFO] Sep-01 09:29:22.283 [API-Q] (T00000000) noversion-1788280161.891 signin.findWorkspaces is RESOLVED @ https://a.slack-edge.com/bv1-13-br/enterprise-signin-core.3a4333c68e2b0e98.primer.min.js:143
+[   31806ms] TypeError: window.lintrk is not a function
+    at <anonymous>:1:8
+    at https://www.googletagmanager.com/gtm.js?id=GTM-KH2LPK:1134:429
+    at BS (https://www.googletagmanager.com/gtm.js?id=GTM-KH2LPK:1136:31)
+    at Kd.AS (https://www.googletagmanager.com/gtm.js?id=GTM-KH2LPK:1133:92)
+    at Kd.<anonymous> (https://www.googletagmanager.com/gtm.js?id=GTM-KH2LPK:457:187)
+    at l.apply (https://www.googletagmanager.com/gtm.js?id=GTM-KH2LPK:376:466)
+    at gb (https://www.googletagmanager.com/gtm.js?id=GTM-KH2LPK:337:806)
+    at fb (https://www.googletagmanager.com/gtm.js?id=GTM-KH2LPK:337:512)
+    at Kd.<anonymous> (https://www.googletagmanager.com/gtm.js?id=GTM-KH2LPK:400:473)
+    at l.apply (https://www.googletagmanager.com/gtm.js?id=GTM-KH2LPK:376:466)
+    at gb (https://www.googletagmanager.com/gtm.js?id=GTM-KH2LPK:337:806)
+    at l.Qq (https://www.googletagmanager.com/gtm.js?id=GTM-KH2LPK:338:124)
+    at qf (https://www.googletagmanager.com/gtm.js?id=GTM-KH2LPK:411:962)
+    at https://www.googletagmanager.com/gtm.js?id=GTM-KH2LPK:913:7
+    at Zz (https://www.googletagmanager.com/gtm.js?id=GTM-KH2LPK:794:496)
+    at fA.evaluate (https://www.googletagmanager.com/gtm.js?id=GTM-KH2LPK:800:289)
+[   31806ms] TypeError: window.lintrk is not a function
+    at <anonymous>:1:8
+    at https://www.googletagmanager.com/gtm.js?id=GTM-KH2LPK:1134:429
+    at BS (https://www.googletagmanager.com/gtm.js?id=GTM-KH2LPK:1136:31)
+    at Kd.AS (https://www.googletagmanager.com/gtm.js?id=GTM-KH2LPK:1133:92)
+    at Kd.<anonymous> (https://www.googletagmanager.com/gtm.js?id=GTM-KH2LPK:457:187)
+    at l.apply (https://www.googletagmanager.com/gtm.js?id=GTM-KH2LPK:376:466)
+    at gb (https://www.googletagmanager.com/gtm.js?id=GTM-KH2LPK:337:806)
+    at fb (https://www.googletagmanager.com/gtm.js?id=GTM-KH2LPK:337:512)
+    at Kd.<anonymous> (https://www.googletagmanager.com/gtm.js?id=GTM-KH2LPK:400:473)
+    at l.apply (https://www.googletagmanager.com/gtm.js?id=GTM-KH2LPK:376:466)
+    at gb (https://www.googletagmanager.com/gtm.js?id=GTM-KH2LPK:337:806)
+    at l.Qq (https://www.googletagmanager.com/gtm.js?id=GTM-KH2LPK:338:124)
+    at qf (https://www.googletagmanager.com/gtm.js?id=GTM-KH2LPK:411:962)
+    at https://www.googletagmanager.com/gtm.js?id=GTM-KH2LPK:913:7
+    at Zz (https://www.googletagmanager.com/gtm.js?id=GTM-KH2LPK:794:496)
+    at fA.evaluate (https://www.googletagmanager.com/gtm.js?id=GTM-KH2LPK:800:289)
+[   31878ms] [ERROR] Access to XMLHttpRequest at 'https://slack.com/clog/track/' from origin 'https://github-grid.enterprise.slack.com' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource. @ https://github-grid.enterprise.slack.com/?redir=%2Fr-t12348411142%3Fredir%3D%252Farchives%252FC01AK2D831R%252Fp1788274718434579%253Fname%253DC01AK2D831R%2526perma%253D1788274718434579:0
+[   31878ms] [ERROR] Failed to load resource: net::ERR_FAILED @ https://slack.com/clog/track/:0

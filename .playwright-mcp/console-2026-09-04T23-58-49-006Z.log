@@ -1,0 +1,10 @@
+[    1791ms] [ERROR] Not signed in with the identity provider. @ https://x.com/ghchangelog:0
+[    2722ms] [ERROR] [GSI_LOGGER]: FedCM get() rejects with NetworkError: Error retrieving a token. @ https://abs.twimg.com/x-web/x-web/assets/sentry-filter--Rp4GWNV.js:2
+[    3933ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ https://api.x.com/1.1/graphql/viewer_context.json:0
+[    3934ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ https://api.x.com/1.1/flow/viewer.json:0
+[   33890ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ https://api.x.com/1.1/flow/viewer.json:0
+[   37442ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ https://api.x.com/1.1/flow/viewer.json:0
+[   37445ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ https://api.x.com/1.1/graphql/viewer_context.json:0
+[   50535ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ https://api.x.com/1.1/flow/viewer.json:0
+[   98635ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ https://api.x.com/1.1/flow/viewer.json:0
+[  109935ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ https://api.x.com/1.1/flow/viewer.json:0

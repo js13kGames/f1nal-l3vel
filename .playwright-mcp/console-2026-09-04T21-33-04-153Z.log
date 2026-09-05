@@ -1,0 +1,6 @@
+[     657ms] Uncaught (in promise) TypeError: Failed to execute 'observe' on 'MutationObserver': parameter 1 is not of type 'Node'.
+    at watchForElement (https://pages.rainfocus.com/github/universe26/js.js:189:6)
+[     692ms] [WARNING] <meta name="apple-mobile-web-app-capable" content="yes"> is deprecated. Please include <meta name="mobile-web-app-capable" content="yes"> @ https://reg.githubuniverse.com/flow/github/universe26/community/workingreport/1785302098311001XQwQ:0
+[    1054ms] Uncaught (in promise) TypeError: Failed to execute 'observe' on 'MutationObserver': parameter 1 is not of type 'Node'.
+    at watchForElement (https://pages.rainfocus.com/github/universe26/js.js:189:6)
+[    1065ms] [WARNING] <meta name="apple-mobile-web-app-capable" content="yes"> is deprecated. Please include <meta name="mobile-web-app-capable" content="yes"> @ https://reg.githubuniverse.com/flow/github/universe26/community/login:0
