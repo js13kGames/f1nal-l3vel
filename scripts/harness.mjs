@@ -197,3 +197,51 @@ export function canClear(g, speedVal, spawn) {
   }
   return { ok, coin };
 }
+
+// Two-phase controller for jump-required step templates. The generic canClear
+// only ever jumps for a horn threat, so it cannot mount steps that sit above the
+// auto-step threshold. This one first JUMPS onto the ascending steps to reach the
+// launch height, then jumps the tall horn. It reports whether it cleared and
+// whether the winning run ever stood on an emitted step (foot above the ground
+// line) — which, because an idle runner stays pinned to the ground, is proof the
+// ascent required a real jump onto the steps.
+function climbAttempt(g, speedVal, spawn, params) {
+  sandbox(g, speedVal);
+  spawn(g);
+  const dt = 1 / 60, G = 448, px = g.p.x;
+  const step0 = g.solids.reduce((a, s) => (a === null || s.x < a.x ? s : a), null);
+  const horn = g.obs.reduce((a, o) => (o.type !== 'c' && (a === null || o.x < a.x) ? o : a), null);
+  if (!step0 || !horn) return { ok: false, onStep: false };
+  let phase = 0, jt = 0, r1 = false, r2 = false, doubled = false, onStep = false;
+  for (let time = 0; time < 6; time += dt) {
+    const hornFront = horn.x + horn.w * 0.24;
+    if (phase === 0 && g.p.on && step0.x - px <= params.L1) { g.press(); phase = 1; jt = 0; }
+    else if (phase === 1) {
+      jt += dt;
+      if (!r1 && jt >= params.h1) { g.release(); r1 = true; }
+      if (g.p.on && G - (g.p.y + g.p.h) >= 85) phase = 2;   // reached the launch runway
+    } else if (phase === 2 && g.p.on && hornFront - px <= params.L2) { g.press(); phase = 3; jt = 0; }
+    else if (phase === 3) {
+      jt += dt;
+      if (!r2 && jt >= params.h2) { g.release(); r2 = true; }
+      if (params.dbl && !doubled && jt >= 0.12) { g.press(); doubled = true; }
+    }
+    g.update(dt);
+    if (g.p.on && G - (g.p.y + g.p.h) > 20) onStep = true;   // grounded above the floor => stood on a step
+    if (g.mode === 'end' && !g.won) return { ok: false, onStep };
+    if (allPassed(g)) return { ok: true, onStep };
+  }
+  return { ok: allPassed(g), onStep };
+}
+
+// Search the two-phase timing space; return the first strategy that both clears
+// the template and lands on a step along the way.
+export function climbAndClear(g, speedVal, spawn) {
+  let cleared = false;
+  for (const L1 of [120, 140, 160, 180, 200, 220]) for (const h1 of [0.6, 0.14])
+    for (const L2 of [180, 210, 240, 270, 300]) for (const h2 of [0.6, 0.14, 0.05]) for (const dbl of [false, true]) {
+      const r = climbAttempt(g, speedVal, spawn, { L1, h1, L2, h2, dbl });
+      if (r.ok) { cleared = true; if (r.onStep) return { ok: true, onStep: true }; }
+    }
+  return { ok: cleared, onStep: false };
+}

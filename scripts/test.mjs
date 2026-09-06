@@ -5,7 +5,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
 import fs from 'node:fs';
-import { load, canClear, sandbox, ROOT, INDEX } from './harness.mjs';
+import { load, canClear, climbAndClear, sandbox, ROOT, INDEX } from './harness.mjs';
 
 const DT = 1 / 60;
 const G_GROUND = 448 - 24; // player top when grounded
@@ -311,7 +311,7 @@ test('hidden/blur freeze avoids idle death and time catch-up', () => {
 // ---------------------------------------------------------------------------
 // 2 (fairness). Every template clearable at min/mid/max speed + coin reachable.
 // ---------------------------------------------------------------------------
-const IDS = ['single', 'double', 'triple', 'tall', 'ceil', 'fall', 'saw'];
+const IDS = ['single', 'double', 'triple', 'tall', 'ceil', 'fall', 'saw', 'gate'];
 const COIN_IDS = new Set(['single', 'double']);
 for (const id of IDS) {
   test(`template "${id}" is clearable at every speed and parameter extreme`, () => {
@@ -327,6 +327,185 @@ for (const id of IDS) {
     }
   });
 }
+
+// ---------------------------------------------------------------------------
+// Feature: step-up horns. A horn tall enough that NO ground jump (single OR
+// double) can clear it. It is fair only because the template hands you a
+// staircase — but the first riser sits ABOVE the auto-step threshold, so you
+// must actually JUMP onto the steps to reach the launch height; a runner that
+// never jumps stays pinned to the ground and is impaled by the horn.
+// ---------------------------------------------------------------------------
+test('step-up horn is unclearable from the ground but clearable only by jumping onto the steps', () => {
+  const { g } = fresh();
+  // The bare horn on flat ground: prove it is impossible at every speed with any
+  // timing, hold, and double-jump strategy the search can find (evidence a
+  // ground-only double jump cannot clear the tall horn).
+  for (const sv of [330, 460, 590]) {
+    const bare = canClear(g, sv, (gg) => gg.ob(880, 26, 225, 'g'));
+    assert.ok(!bare.ok, `the 225px horn must be impossible from flat ground at speed ${sv}`);
+  }
+  // The generic single-jump-for-the-horn strategy is NOT enough: because the
+  // ascent now requires jumping onto the steps, only the two-phase climber wins.
+  for (const sv of [330, 460, 590]) {
+    assert.ok(!canClear(g, sv, (gg) => gg.emit('step', 880)).ok,
+      `walking the steps must not clear the template at speed ${sv} — a jump onto the steps is required`);
+    const climb = climbAndClear(g, sv, (gg) => gg.emit('step', 880));
+    assert.ok(climb.ok, `the step-up template must be clearable by climbing at speed ${sv}`);
+    assert.ok(climb.onStep, `the winning path must land on a step above the ground at speed ${sv}`);
+  }
+  // Shape check: three ground-anchored ascending steps then the tall horn.
+  g.startRun(); g.emit('step', 900);
+  assert.equal(g.solids.length, 3, 'three ascending steps');
+  const tops = Array.from(g.solids, (s) => 448 - s.y).sort((a, b) => a - b);
+  assert.deepEqual(tops, [48, 72, 90], 'steps rise 48/72/90 to a launch height');
+  assert.ok(tops[0] > 34, `the first riser (${tops[0]}px) sits above the 34px auto-step threshold, so it cannot be walked up`);
+  for (const s of g.solids) assert.equal(s.y + s.h, 448, 'each step is anchored to the ground');
+  assert.equal(g.obs.length, 1, 'exactly one horn');
+  assert.equal(g.obs[0].type, 'g', 'the horn is a normal ground horn');
+  assert.ok(g.obs[0].h > 218, `the horn is taller than any ground jump can clear (${g.obs[0].h}px)`);
+  assert.equal(g.coins.length, 0, 'the step template scores nothing');
+});
+
+test('step-up horn: an idle runner cannot reach the launch height and is impaled by the horn', () => {
+  for (const sv of [330, 460, 590]) {
+    const { g } = fresh();
+    sandbox(g, sv);
+    g.emit('step', 900);
+    let maxUp = 0, died = false;
+    for (let i = 0; i < 600; i++) {
+      g.update(DT);
+      if (g.p.on) maxUp = Math.max(maxUp, 448 - (g.p.y + g.p.h));
+      if (g.mode === 'end') { died = true; break; }
+    }
+    assert.equal(maxUp, 0, `without a jump the runner never rises off the ground at speed ${sv} (auto-step cannot mount the first riser)`);
+    assert.ok(died && !g.won, `an idle runner is killed by the horn it never launched over at speed ${sv}`);
+  }
+});
+
+// ---------------------------------------------------------------------------
+// Feature: flappy-bird gate. A floor horn and a ceiling horn share the same
+// column with a jumpable corridor between them; you must thread the gap.
+// ---------------------------------------------------------------------------
+test('flappy gate aligns a floor + ceiling horn pair with a jumpable corridor', () => {
+  const { g } = fresh();
+  g.startRun(); g.emit('gate', 900);
+  assert.equal(g.obs.length, 2, 'a gate is exactly two horns');
+  const floor = g.obs.find((o) => o.type === 'g');
+  const roof = g.obs.find((o) => o.type === 'c');
+  assert.ok(floor && roof, 'one ground horn and one ceiling horn');
+  assert.equal(floor.x, roof.x, 'the pair is vertically aligned');
+  assert.equal(floor.x + floor.w, roof.x + roof.w, 'the pair shares a column');
+  assert.equal(floor.gate, 1, 'floor horn is tagged as part of the gate');
+  assert.equal(roof.gate, 1, 'ceiling horn is tagged as part of the gate');
+  assert.equal(g.coins.length, 0, 'the gate scores nothing');
+  // The safe corridor (player-top window) is real and comfortably taller than the player.
+  const lower = 0.76 * roof.h - 4;          // must stay below the ceiling collider
+  const upper = 448 - 20 - 0.8 * floor.h;   // must stay above the floor collider
+  assert.ok(upper - lower > g.p.h, `corridor ${(upper - lower).toFixed(0)}px exceeds the player height`);
+  // The corridor is threadable by a real jump at every speed.
+  for (const sv of [330, 460, 590]) {
+    const r = canClear(g, sv, (gg) => gg.emit('gate', 880));
+    assert.ok(r.ok, `gate corridor must be jumpable at speed ${sv}`);
+  }
+});
+
+test('flappy gate forces a jump: an idle player collides with the floor horn', () => {
+  const { g } = fresh();
+  sandbox(g, 400);
+  g.emit('gate', 900);
+  for (let i = 0; i < 300; i++) { g.update(DT); if (g.mode !== 'play') break; }
+  assert.equal(g.mode, 'end', 'standing still in a gate is lethal (the floor horn is unavoidable without jumping)');
+  assert.ok(!g.won);
+});
+
+// The rendered horns are triangles pointing at each other: the ground horn's tip
+// sits at its top (world y = floor.y) and the ceiling horn's tip hangs at its
+// bottom (world y = roof.h). The VISIBLE opening is the vertical gap between
+// those two tips at the shared centre column the player threads. This must be a
+// real, comfortable gap versus the player's rendered-and-rotated size, not a
+// gap that exists only in the shrunk collider (which previously let the tips
+// visually touch/overlap while tests still passed).
+test('flappy gate leaves a real visible opening between the rendered horn tips', () => {
+  const { g } = fresh();
+  g.startRun(); g.emit('gate', 900);
+  const floor = g.obs.find((o) => o.type === 'g');
+  const roof = g.obs.find((o) => o.type === 'c');
+  const floorTipY = floor.y;          // ground horn tip (rendered at its top edge)
+  const ceilTipY = roof.h;            // ceiling horn tip (rendered at its bottom edge)
+  const visibleGap = floorTipY - ceilTipY;
+  const diagonal = Math.hypot(g.p.w, g.p.h); // full rotated player diagonal (~33.9px)
+  assert.ok(visibleGap > 0, `horn tips must not touch/overlap (visible gap ${visibleGap}px)`);
+  assert.ok(visibleGap >= 80, `visible opening ${visibleGap}px must be comfortable (>=80px)`);
+  assert.ok(
+    visibleGap >= 2 * diagonal,
+    `visible opening ${visibleGap}px must comfortably clear the rotated player (>=${(2 * diagonal).toFixed(0)}px)`,
+  );
+  // The design is explicit: the roof height is derived so the opening equals
+  // ground-floor-opening. The lower horn stays meaningful (unchanged tall spike).
+  assert.ok(floor.h >= 90, `lower horn stays meaningful (${floor.h}px)`);
+});
+
+// Prove the opening is real in motion, not just in the shrunk collider: replay a
+// genuine, attainable jump and verify the player's rendered-and-rotated body
+// threads the gate WITHOUT ever visually overlapping either horn triangle, at
+// min/mid/max speed. The triangle boundaries are evaluated at the tightest
+// column the player's rotated box spans, so this is a faithful pixel-geometry
+// check against the real production update/collision.
+function gateVisiblyThreadable(g, speedVal) {
+  const DT2 = 1 / 60, PX = 170;
+  const leads = [140, 165, 190, 215, 240, 265, 290, 315];
+  const holds = [0.05, 0.14, 0.6];
+  for (const lead of leads) for (const hold of holds) for (const dbl of [false, true]) {
+    const dblTs = dbl ? [0.30, 0.36, 0.42] : [0];
+    for (const dblT of dblTs) {
+      sandbox(g, speedVal);
+      g.emit('gate', 880);
+      let jumped = false, jt = 0, doubled = false, released = false, clean = true, crossed = false, passed = false;
+      for (let time = 0; time < 4.5 && clean; time += DT2) {
+        if (!jumped && g.p.on) {
+          const fl = g.obs.find((o) => o.type === 'g');
+          const front = fl ? fl.x + fl.w * 0.24 : null;
+          if (front !== null && front - g.p.x <= lead) { g.press(); jumped = true; jt = 0; }
+        } else if (jumped) {
+          jt += DT2;
+          if (!released && jt >= hold) { g.release(); released = true; }
+          if (dbl && !doubled && jt >= dblT) { g.press(); doubled = true; }
+        }
+        g.update(DT2);
+        if (g.mode === 'end' && !g.won) { clean = false; break; }
+        const roof = g.obs.find((o) => o.type === 'c'), fl = g.obs.find((o) => o.type === 'g');
+        if (roof && fl) {
+          const a = g.p.ang, hy = (Math.abs(Math.cos(a)) + Math.abs(Math.sin(a))) * 12;
+          const cx = PX + 12, cy = g.p.y + 12;
+          const pL = cx - hy, pR = cx + hy, pTop = cy - hy, pBot = cy + hy;
+          const hc = roof.x + roof.w / 2;
+          const oL = Math.max(pL, roof.x), oR = Math.min(pR, roof.x + roof.w);
+          if (oR > oL) {
+            crossed = true;
+            const col = Math.max(oL, Math.min(oR, hc));      // tightest column in the overlap
+            const f = Math.abs(col - hc) / (roof.w / 2);     // 0 at centre .. 1 at edge
+            const ceilLow = roof.h * (1 - f);                // ceiling triangle lower edge here
+            const floorUp = fl.y + fl.h * f;                 // floor triangle upper edge here
+            if (pTop < ceilLow - 1e-6 || pBot > floorUp + 1e-6) { clean = false; break; }
+          }
+        }
+        if (g.obs.every((o) => o.x + o.w < g.p.x)) { passed = true; break; }
+      }
+      if (passed && clean && crossed) return true;
+    }
+  }
+  return false;
+}
+
+test('flappy gate is visibly threadable: the rendered player clears both horns at every speed', () => {
+  for (const sv of [330, 460, 590]) {
+    const { g } = fresh();
+    assert.ok(
+      gateVisiblyThreadable(g, sv),
+      `an attainable jump must thread the gate without the rendered player overlapping either horn at speed ${sv}`,
+    );
+  }
+});
 
 // ---------------------------------------------------------------------------
 // 2 (spacing). Real generator: meaningful recovery windows, no saw overtaking.
@@ -345,7 +524,7 @@ function spacing(distLock) {
       const [zl, zr] = zone(o);
       if (zl < 194 && zr > 170) {
         const r = recs.get(o);
-        if (!r) recs.set(o, { type: o.type, enter: f * DT, exit: f * DT, h: o.h });
+        if (!r) recs.set(o, { type: o.type, enter: f * DT, exit: f * DT, h: o.h, gate: o.gate });
         else r.exit = f * DT;
       }
     }
@@ -368,6 +547,7 @@ function spacing(distLock) {
     minGap = Math.min(minGap, gap);
   }
   for (const c of ceil) for (const a of action) {
+    if (c.gate) continue;                                  // gates deliberately align a ceiling horn over a floor horn with a jumpable corridor
     assert.ok(!(c.enter < a.exit && c.exit > a.enter), 'ceiling overlaps an action hazard in the player lane');
   }
   return { obstacles: all.length, types: [...new Set(all.map((r) => r.type))].join(''), minGap };
@@ -555,32 +735,89 @@ test('reduced motion drops the cosmetic reverse displacement but keeps the mecha
   env.reducedMotion(false);
 });
 
-test('petty wind gust ignores grounded players and only shoves after the warning', () => {
+test('wind tunnel: warning is inert, then live entry snaps to the ceiling and inverts gravity', () => {
   let { g } = fresh();
   sandbox(g, 400);
-  g.winds.push({ x: 120, w: 400, warn: 0, hit: 0 });     // live gust over a grounded player
-  for (let i = 0; i < 25; i++) g.update(DT);
-  assert.equal(g.p.on, 1, 'grounded player stays grounded');
-  assert.equal(g.p.vy, 0, 'grounded player is unaffected');
-  assert.equal(g.mode, 'play');
+  // A grounded player under a still-telegraphing tunnel is untouched.
+  g.winds.push({ x: 120, w: 400, warn: 5, hit: 0 });
+  for (let i = 0; i < 20; i++) g.update(DT);
+  assert.equal(g.p.on, 1, 'warning gust leaves a grounded player grounded');
+  assert.equal(g.p.inv, 0, 'no inversion while still warning');
+  assert.equal(g.p.vy, 0, 'no vertical impulse while warning');
 
-  ({ g } = fresh());
-  sandbox(g, 400);
-  g.winds.push({ x: 100, w: 600, warn: 5, hit: 0 });     // still telegraphing
-  Object.assign(g.p, { on: false, coy: -1, j: 2, y: 200, vy: 0 });
-  let vy = g.p.vy;
-  g.update(DT);
-  assert.ok(Math.abs(g.p.vy - (vy + 1450 * DT)) < 1e-9, 'gravity only while warning');
+  // Live tunnel over the player: snap to the top ONCE and flip gravity upward.
   g.winds[0].warn = 0;
-  vy = g.p.vy;
   g.update(DT);
-  assert.ok(g.p.vy > vy + 1450 * DT + 1, 'extra downward shove once the gust is live');
+  assert.equal(g.p.inv, 1, 'entering a live tunnel inverts gravity');
+  assert.ok(Math.abs(g.p.y - 48) < 1e-9, 'player is snapped to the ceiling line');
+  assert.equal(g.p.on, 1, 'rests against the ceiling');
+  assert.equal(g.p.j, 0, 'jumps refreshed on the ceiling');
+  // The snap happens once, not every frame: shove the player down and confirm no re-snap.
+  g.p.y = 120; g.p.on = 0;
+  g.update(DT);
+  assert.ok(g.p.y > 60, 'no per-frame re-snap to the ceiling');
+  assert.ok(g.p.vy < 0, 'gravity now pulls the player back up toward the ceiling');
+});
+
+test('wind tunnel: an inverted jump pushes down, holds/doubles sign-aware, and lands back on the ceiling', () => {
+  const { g } = fresh();
+  sandbox(g, 400);
+  g.winds.push({ x: 120, w: 400, warn: 0, hit: 0 });
+  g.update(DT);                                   // enter tunnel, pinned to ceiling
+  assert.equal(g.p.inv, 1);
+  // A jump inside the tunnel launches DOWNWARD (away from the ceiling).
+  g.press(); g.update(DT);
+  assert.ok(g.p.vy > 0, 'inverted jump velocity is downward (away from ceiling)');
+  const vFull = g.p.vy;
+  // A hold-release inside the tunnel cuts the downward launch, mirroring the normal short hop.
+  const { g: g2 } = fresh();
+  sandbox(g2, 400);
+  g2.winds.push({ x: 120, w: 400, warn: 0, hit: 0 });
+  g2.update(DT);
+  g2.press(); g2.update(DT); g2.release();
+  assert.ok(g2.p.vy < vFull && g2.p.vy > 0, 'sign-aware release cuts the inverted rise');
+  // Double jump is available in the air and adds more downward speed.
+  g.press(); g.update(DT);
+  assert.equal(g.p.j, 2, 'second inverted jump consumed');
+  // Falling back "up" lands and refreshes jumps on the ceiling.
+  let landed = false;
+  for (let i = 0; i < 200; i++) { g.update(DT); if (g.p.on && Math.abs(g.p.y - 48) < 1) { landed = true; break; } }
+  assert.ok(landed, 'returns to and lands on the ceiling');
+  assert.equal(g.p.j, 0, 'ceiling landing restores jumps');
+  assert.equal(g.mode, 'play', 'the tunnel is never lethal on its own');
+});
+
+test('wind tunnel: exit restores downward gravity naturally without snapping to the floor', () => {
+  const { g } = fresh();
+  sandbox(g, 400);
+  g.winds.push({ x: 150, w: 120, warn: 0, hit: 0 });
+  g.update(DT);
+  assert.equal(g.p.inv, 1, 'inverted while inside');
+  const yIn = g.p.y;
+  assert.ok(Math.abs(yIn - 48) < 1e-9, 'pinned to the ceiling inside');
+  // Scroll the tunnel fully past the player.
+  let exited = false;
+  for (let i = 0; i < 200; i++) { g.update(DT); if (!g.p.inv) { exited = true; break; } }
+  assert.ok(exited, 'inversion clears once the tunnel scrolls away');
+  assert.ok(g.p.y < 200, 'player is NOT snapped down to the floor on exit');
+  // Gravity is downward again: the player falls and eventually lands on the ground.
+  let onGround = false;
+  for (let i = 0; i < 200; i++) { g.update(DT); if (g.p.on && Math.abs((g.p.y + g.p.h) - 448) < 1) { onGround = true; break; } }
+  assert.ok(onGround, 'normal downward gravity returns and the player lands on the ground');
   assert.equal(g.mode, 'play');
-  // Non-lethal by itself: the player just lands.
-  for (let i = 0; i < 120; i++) g.update(DT);
-  assert.equal(g.mode, 'play', 'the gust alone never kills');
-  assert.equal(g.p.on, 1);
-  assert.equal(g.bonus, 0);
+});
+
+test('wind tunnel: an idle player is carried up, never killed, and restarts clear the inversion', () => {
+  const { g } = fresh();
+  sandbox(g, 400);
+  g.winds.push({ x: 120, w: 300, warn: 0, hit: 0 });
+  for (let i = 0; i < 300; i++) { g.update(DT); if (g.mode !== 'play') break; }
+  assert.equal(g.mode, 'play', 'a passive player survives the whole tunnel');
+  assert.equal(g.bonus, 0, 'the tunnel scores nothing');
+  // A fresh run always clears the inverted-gravity flag.
+  g.p.inv = 1;
+  g.startRun();
+  assert.equal(g.p.inv, 0, 'restart resets inverted gravity');
 });
 
 test('nearly helpful spring: weak bounce, cut rise, double jump kept, no points', () => {
@@ -685,6 +922,8 @@ test('every rage-bait element renders in both motion modes without throwing', ()
     g.boostT = 1; g.revT = 1;
     g.update(DT);
     g.draw();
+    g.winds[0].warn = 0; g.p.inv = 1; g.draw();   // live tunnel + upside-down player
+    g.p.inv = 0;
     g.mode = 'end'; g.draw(); g.mode = 'play';
   }
   env.reducedMotion(false);

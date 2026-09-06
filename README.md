@@ -33,9 +33,19 @@ win condition. **Missing** a bit resets your combo. Restarting a run clears all 
 ### Fair, speed-aware obstacles
 
 Obstacle spacing scales with your current speed so every pattern stays reachable, with a genuine recovery window
-between hazards. Tricky hazards (tall pillars, ceiling drops, falling horns, saw blades) show a **consistent solid
-warning marker** in advance. Every generated template is verified clearable at min/mid/max speed by simulating the
-real game physics (see *Regression tests*).
+between hazards. Tricky hazards (tall pillars, ceiling drops, falling horns, saw blades, step-up horns, gates) show
+a **consistent solid warning marker** in advance. Every generated template is verified clearable at min/mid/max
+speed by simulating the real game physics (see *Regression tests*).
+
+- **Step-up horns** — a horn so tall that **no ground jump can clear it, not even a perfectly timed double jump**.
+  The template hands you a short 48/72/90 staircase, but its first riser sits *above* the auto-step threshold, so
+  you cannot walk up it — you must **jump onto the steps** to reach the launch height and then leap from the top.
+  Simulation proves the bare horn is impossible from flat ground, that merely running the steps never clears the
+  template, and that only a path which jumps onto the steps clears it — while an idle runner never leaves the
+  ground and is impaled by the horn.
+- **Flappy gates** — a floor horn and a ceiling horn stacked in the same column with a jumpable corridor between
+  them, à la Flappy Bird. You must jump high enough to clear the bottom horn while staying under the top one; a
+  reckless full double jump clips the ceiling. The safe corridor is verified threadable at every speed.
 
 ### Procedural terrain: platforms, steps & pits
 
@@ -67,8 +77,11 @@ learnable — the joke only lands once:
 - **Reverse boost** — a blue star marked `⇄`. Collecting it briefly scrolls the world *backwards*: obstacles,
   coins, platforms, springs, gusts and the spawn cursor all move right together, and you visually slide back
   before being restored. Distance keeps climbing at the normal rate, and nothing extra is spawned.
-- **Petty wind gust** — an orange-outlined column with a `!` that later turns into a live blue downdraft. It only
-  shoves you *while you are airborne*; standing on the ground makes it completely powerless.
+- **Wind tunnel** — a telegraphed column with a `!` that turns into a live purple updraft. While it warns, it is
+  completely inert. The moment you enter the live tunnel it **lifts you to the ceiling and flips gravity**: you now
+  fall *upward* and rest against the top. Jumping fires you *downward* away from the ceiling (hold, release-cut and
+  double jump all work sign-aware), and you land back on the ceiling. When the tunnel scrolls past, normal downward
+  gravity simply resumes where you are — no snap back to the floor — and you drift down to the ground.
 - **Nearly helpful spring** — a coil that bounces you on a descending top contact, but only about half as high as
   a real jump, and then quietly cuts the rise short. Your double jump is still available afterwards.
 
@@ -137,6 +150,14 @@ drop, stair mounting, a pit removing ground support and killing by a fall below 
 the far side), every generated pit width jumpable at min/mid/max speed and rng extremes, pits never overlapping an
 obstacle/solid/pit, terrain moving under hostile/reverse boost and freezing under pause, and a render smoke test in
 both motion modes.
+
+The step-up horns, flappy gates and wind tunnel each add dedicated coverage: numerical search proving a step-up
+horn is impossible from flat ground, that merely running its steps never clears it, and that only a path which
+jumps onto the steps clears it at every speed, plus a check that an idle runner never rises and is impaled; the gate's aligned
+floor+ceiling pair, real corridor height and threadability at every speed plus a forced-jump death check; and the
+wind tunnel's inert warning, one-time ceiling snap and gravity inversion on entry, sign-aware down-jump with
+hold/double, ceiling landing, natural gravity restore on exit with no floor snap, idle survivability and
+restart reset.
 
 ## Theme interpretation
 
