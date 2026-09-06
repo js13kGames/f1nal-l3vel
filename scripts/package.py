@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-"""Reproducible, dependency-free packager for the 1337 js13k game.
+"""Reproducible, dependency-free packager for the F1NA113VE1 js13k game.
 
-Builds dist/1337.zip containing ONLY index.html, using a fixed timestamp and
+Builds dist/F1NA113VE1.zip containing ONLY index.html, using a fixed timestamp and
 fixed file permissions so the archive is byte-for-byte reproducible. Uses
 maximum DEFLATE compression (level 9) from the Python standard library.
 
@@ -18,7 +18,7 @@ import zipfile
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SRC = os.path.join(ROOT, "index.html")
 DIST = os.path.join(ROOT, "dist")
-OUT = os.path.join(DIST, "1337.zip")
+OUT = os.path.join(DIST, "F1NA113VE1.zip")
 
 LIMIT = 13000  # bytes; conservative, also under the official js13k 13,312.
 FIXED_DATE = (1980, 1, 1, 0, 0, 0)  # deterministic timestamp for reproducibility
@@ -46,7 +46,7 @@ def build():
     names = zipfile.ZipFile(OUT).namelist()
 
     print("raw  index.html : {:>6} bytes".format(raw))
-    print("zip  1337.zip    : {:>6} bytes  ({})".format(arc, ", ".join(names)))
+    print("zip  F1NA113VE1.zip : {:>6} bytes  ({})".format(arc, ", ".join(names)))
     print("limit            : {:>6} bytes".format(LIMIT))
 
     if names != ["index.html"]:

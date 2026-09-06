@@ -1,4 +1,4 @@
-// Deterministic regression + fairness suite for the 1337 game.
+// Deterministic regression + fairness suite for the F1NA113VE1 game.
 // Runs the REAL production code (index.html) via scripts/harness.mjs.
 // Run:  node --test scripts/
 import { test } from 'node:test';
@@ -20,7 +20,7 @@ test('boots into ready mode with onboarding overlay, no auto-run', () => {
   const { g, env } = fresh();
   assert.equal(g.mode, 'ready');
   assert.ok(!env.ov.hidden, 'overlay visible in ready mode');
-  assert.match(env.ov.innerHTML, /FINAL LEVEL/);
+  assert.match(env.ov.innerHTML, /F1NA113VE1/);
   assert.match(env.ov.innerHTML, /hold/i);
   assert.match(env.ov.innerHTML, /double/i);
   // No physics runs while in ready mode.
@@ -511,15 +511,45 @@ test('flappy gate is visibly threadable: the rendered player clears both horns a
 // 2 (spacing). Real generator: meaningful recovery windows, no saw overtaking.
 // ---------------------------------------------------------------------------
 function zone(o) { return o.type === 's' ? [o.x, o.x + o.w] : [o.x + o.w * 0.24, o.x + o.w * 0.76]; }
-function spacing(distLock) {
-  const { g } = fresh();
+// Collect a distLock's worth of generated hazards under a fixed regime (floor or
+// ceiling) and a fixed RNG seed. The probe is parked off the x-axis (p.x far
+// past every emitted obstacle, wind, pit, solid, coin and powerup) so no AABB,
+// step-up, wind-toggle or pickup check in the real update loop can reach it.
+// With the collision surface out of range, we can pin the probe to its natural
+// resting height for the requested regime and never touch die():
+//   * inv=0 rests on the floor (p.y = G - p.h = 424); production physics
+//     naturally snaps it there and the floor-underflow guard (p.y > H+40)
+//     stays comfortably clear.
+//   * inv=1 rests on the ceiling (p.y = WT = 48); the inverted branch either
+//     re-clamps to WT or falls through to the airborne else with p.y >= -40,
+//     both non-lethal.
+// die() is never called, so a) g.mode stays 'play' throughout (we assert it
+// after every update instead of masking failures by resetting mode), and
+// b) the seeded RNG order is only consumed by pattern()/emit()/effects that
+// run every frame regardless of regime, keeping generator sampling
+// reproducible. Winds and pits are still cleared as belt-and-suspenders so
+// even a code change that reintroduced a p.x-agnostic effect would not
+// silently corrupt the sample.
+function spacingSample(distLock, inv, seed) {
+  const { g, env } = fresh();
+  env.setRandom(mulberry32(seed));
   g.startRun();
   const recs = new Map();
   const frames = Math.round(60 / DT);
+  const parkY = inv ? 48 : (448 - 24); // WT for ceiling, G - p.h for floor
   for (let f = 0; f < frames; f++) {
+    g.p.inv = inv;                 // pin regime so pattern()/emit() mirror consistently
+    g.p.x = 1e6;                   // park probe fully off the x-axis: no obstacle
+                                   // AABB, wind, coin, powerup or solid step-up
+                                   // check in update() can touch the player
+    g.p.y = parkY; g.p.vy = 0;     // rest on the regime's natural surface
+    g.p.on = 1; g.p.j = 0; g.p.coy = 0.1; g.p.buf = 0; g.p.hold = 0; g.p.spr = 0;
+    g.winds.length = 0;            // defensive: no wind may toggle inversion
+    g.pits.length = 0;             // defensive: no pit interaction at all
     g.update(DT);
+    assert.equal(g.mode, 'play',
+      `probe stayed alive frame ${f} in ${inv ? 'ceiling' : 'floor'} regime at dist ${distLock}`);
     g.dist = distLock;             // lock difficulty + speed tier
-    g.p.y = -1000;                 // park probe player so obstacles just scroll by
     for (const o of g.obs) {
       const [zl, zr] = zone(o);
       if (zl < 194 && zr > 170) {
@@ -529,9 +559,12 @@ function spacing(distLock) {
       }
     }
   }
-  const all = [...recs.values()].sort((a, b) => a.enter - b.enter);
-  const action = all.filter((r) => r.type !== 'c');
-  const ceil = all.filter((r) => r.type === 'c');
+  env.setRandom(null);
+  return [...recs.values()].sort((a, b) => a.enter - b.enter);
+}
+function assertFairRecovery(all, isAction, label) {
+  const action = all.filter(isAction);
+  const cross = all.filter((r) => !isAction(r));
   const ev = [];
   for (const r of action) {
     const last = ev[ev.length - 1];
@@ -543,20 +576,35 @@ function spacing(distLock) {
   for (let i = 1; i < ev.length; i++) {
     const gap = ev[i].enter - ev[i - 1].exit;
     const need = ev[i - 1].tall ? 0.5 : 0.34;            // physics-derived land+react time
-    assert.ok(gap >= need, `recovery gap ${gap.toFixed(3)}s < required ${need}s at dist ${distLock}`);
+    assert.ok(gap >= need, `${label}: recovery gap ${gap.toFixed(3)}s < required ${need}s`);
     minGap = Math.min(minGap, gap);
   }
-  for (const c of ceil) for (const a of action) {
-    if (c.gate) continue;                                  // gates deliberately align a ceiling horn over a floor horn with a jumpable corridor
-    assert.ok(!(c.enter < a.exit && c.exit > a.enter), 'ceiling overlaps an action hazard in the player lane');
+  // Cross-lane overlap check: only meaningful when the "other" lane can actually
+  // reach the runner. In floor regime cross = ceiling horns and we must not
+  // stack a horn over a floor action (gates are the deliberate exception).
+  // In ceiling regime the cross lane is on the floor and cannot threaten the
+  // ceiling runner, so we skip the check there.
+  for (const c of cross) for (const a of action) {
+    if (c.type !== 'c' || c.gate) continue;
+    assert.ok(!(c.enter < a.exit && c.exit > a.enter), `${label}: ceiling overlaps an action hazard in the player lane`);
   }
-  return { obstacles: all.length, types: [...new Set(all.map((r) => r.type))].join(''), minGap };
+  return { count: action.length, minGap };
 }
 test('generator keeps fair recovery windows and no saw overtaking', () => {
   for (const d of [300, 700, 1400]) {                    // low / mid / max-speed tiers
-    const s = spacing(d);
-    assert.ok(s.obstacles > 20, `enough obstacles sampled at dist ${d}`);
-    assert.ok(s.minGap >= 0.34, `min recovery gap healthy at dist ${d} (${s.minGap.toFixed(3)}s)`);
+    // Floor regime: action hazards are the non-ceiling entries (saws, horns,
+    // falls, gate floors). Ceiling horns are cross-lane and gate-exempted.
+    const floor = spacingSample(d, 0, 0xC0FFEE ^ d);
+    const fr = assertFairRecovery(floor, (r) => r.type !== 'c', `dist ${d} floor`);
+    assert.ok(fr.count > 20, `enough floor action hazards sampled at dist ${d} (${fr.count})`);
+    assert.ok(fr.minGap >= 0.34, `floor min recovery gap healthy at dist ${d} (${fr.minGap.toFixed(3)}s)`);
+    // Ceiling regime: mirrored single/double/triple/tall/step horns and the
+    // dedicated 'ceil' template are all action hazards for the inverted
+    // runner. Gate ceilings keep their jumpable-corridor exemption.
+    const ceil = spacingSample(d, 1, 0xBADF00D ^ d);
+    const cr = assertFairRecovery(ceil, (r) => r.type === 'c' && !r.gate, `dist ${d} ceiling`);
+    assert.ok(cr.count > 20, `enough ceiling action hazards sampled at dist ${d} (${cr.count})`);
+    assert.ok(cr.minGap >= 0.34, `ceiling min recovery gap healthy at dist ${d} (${cr.minGap.toFixed(3)}s)`);
   }
 });
 
@@ -787,24 +835,43 @@ test('wind tunnel: an inverted jump pushes down, holds/doubles sign-aware, and l
   assert.equal(g.mode, 'play', 'the tunnel is never lethal on its own');
 });
 
-test('wind tunnel: exit restores downward gravity naturally without snapping to the floor', () => {
+test('wind tunnel: exit preserves inverted mode, and a second wind toggles back to the floor', () => {
   const { g } = fresh();
   sandbox(g, 400);
   g.winds.push({ x: 150, w: 120, warn: 0, hit: 0 });
   g.update(DT);
-  assert.equal(g.p.inv, 1, 'inverted while inside');
-  const yIn = g.p.y;
-  assert.ok(Math.abs(yIn - 48) < 1e-9, 'pinned to the ceiling inside');
-  // Scroll the tunnel fully past the player.
-  let exited = false;
-  for (let i = 0; i < 200; i++) { g.update(DT); if (!g.p.inv) { exited = true; break; } }
-  assert.ok(exited, 'inversion clears once the tunnel scrolls away');
+  assert.equal(g.p.inv, 1, 'inverted while inside the first wind');
+  assert.ok(Math.abs(g.p.y - 48) < 1e-9, 'pinned to the ceiling inside');
+  // Scroll the first tunnel fully past the player: mode PERSISTS on exit.
+  for (let i = 0; i < 200; i++) { g.update(DT); if (g.winds.length === 0) break; }
+  assert.equal(g.winds.length, 0, 'first wind scrolled off-world');
+  assert.equal(g.p.inv, 1, 'ceiling mode persists after leaving the wind');
   assert.ok(g.p.y < 200, 'player is NOT snapped down to the floor on exit');
-  // Gravity is downward again: the player falls and eventually lands on the ground.
-  let onGround = false;
-  for (let i = 0; i < 200; i++) { g.update(DT); if (g.p.on && Math.abs((g.p.y + g.p.h) - 448) < 1) { onGround = true; break; } }
-  assert.ok(onGround, 'normal downward gravity returns and the player lands on the ground');
+  // A SECOND wind must toggle back to the floor.
+  g.winds.push({ x: 150, w: 120, warn: 0, hit: 0 });
+  g.update(DT);
+  assert.equal(g.p.inv, 0, 'second wind toggles gravity back downward');
+  assert.ok(Math.abs((g.p.y + g.p.h) - 448) < 1e-9, 'snapped to the floor on the second wind');
   assert.equal(g.mode, 'play');
+});
+
+test('wind tunnel: each live wind toggles mode exactly once, and warning wind is inert', () => {
+  const { g } = fresh();
+  sandbox(g, 400);
+  // A wind still warning does nothing at all. Keep it wide so it can't scroll off
+  // the player before we flip warn to 0.
+  g.winds.push({ x: 0, w: 2000, warn: 5, hit: 0 });
+  for (let i = 0; i < 30; i++) g.update(DT);
+  assert.equal(g.p.inv, 0, 'warning wind does not toggle mode');
+  assert.equal(g.winds[0].hit, 0, 'warning wind stays unconsumed');
+  // Turn it live and let the player enter it: exactly one toggle up.
+  g.winds[0].warn = 0;
+  g.update(DT);
+  assert.equal(g.p.inv, 1, 'first live entry toggles up');
+  assert.equal(g.winds[0].hit, 1, 'wind marked consumed');
+  // Bouncing in and out of the SAME wind must not toggle again.
+  for (let i = 0; i < 40; i++) { g.press(); g.update(DT); g.release(); }
+  assert.equal(g.p.inv, 1, 'same wind never toggles a second time');
 });
 
 test('wind tunnel: an idle player is carried up, never killed, and restarts clear the inversion', () => {
@@ -1217,17 +1284,158 @@ test('terrain renders in both motion modes without throwing', () => {
   env.reducedMotion(false);
 });
 
+// ---------------------------------------------------------------------------
+// Ceiling terrain: mirrored slabs/stairs/pits/step-hazards emitted while inverted.
+// ---------------------------------------------------------------------------
+const WT_LINE = 48;
+
+test('emit while inverted mirrors terrain shapes to the ceiling with a top flag', () => {
+  const { g } = fresh();
+  sandbox(g, 400);
+  g.p.inv = 1;
+  g.emit('plat', 900);
+  assert.equal(g.solids.length, 1);
+  assert.equal(g.solids[0].y, WT_LINE, 'ceiling slab hangs from the ceiling line');
+  assert.equal(g.solids[0].top, 1, 'flagged as ceiling terrain');
+  g.solids.length = 0;
+  g.emit('stairs', 900);
+  assert.equal(g.solids.length, 3);
+  for (const s of g.solids) { assert.equal(s.y, WT_LINE); assert.equal(s.top, 1); }
+  // Ceiling stairs DESCEND (progressively larger h means the bottom sinks lower).
+  const bots = Array.from(g.solids, (s) => s.y + s.h);
+  assert.deepEqual(bots, [WT_LINE + 30, WT_LINE + 60, WT_LINE + 90], 'stair bottoms descend from ceiling');
+  g.solids.length = 0;
+  g.emit('gap', 900);
+  assert.equal(g.pits.length, 1);
+  assert.equal(g.pits[0].top, 1, 'ceiling gap is flagged as a ceiling pit');
+  g.pits.length = 0;
+  // 'step' template mirrors to ceiling: three solids + one ceiling horn.
+  g.emit('step', 900);
+  assert.ok(g.solids.every((s) => s.top === 1 && s.y === WT_LINE), 'all step solids are ceiling-anchored');
+  assert.equal(g.obs.length, 1);
+  assert.equal(g.obs[0].type, 'c', 'the step template horn mirrors to a ceiling horn');
+});
+
+test('single/double/triple emit as ceiling horns tall enough to hit a ceiling runner', () => {
+  const { g, env } = fresh();
+  sandbox(g, 400);
+  g.p.inv = 1;
+  env.setRandom(() => 0);   // minimum height end of the range
+  for (const id of ['single', 'double', 'triple']) {
+    g.obs.length = 0;
+    g.emit(id, 900);
+    assert.ok(g.obs.length > 0, `${id} emits at least one horn`);
+    for (const o of g.obs) {
+      assert.equal(o.type, 'c', `${id} mirrors to a ceiling horn`);
+      // Ceiling collision threshold is o.h*.76; the player top+4 sits at 52 while
+      // pinned to the ceiling. Every mirrored horn must reach past that line.
+      assert.ok(o.h * 0.76 > 52, `${id} horn h=${o.h} misses a ceiling runner`);
+    }
+  }
+  env.setRandom(null);
+});
+
+test('ceiling solid: an inverted runner auto-steps onto its bottom face and jumps refresh', () => {
+  const { g } = fresh();
+  sandbox(g, 400);
+  g.p.inv = 1; g.p.y = WT_LINE; g.p.vy = 0; g.p.on = 1;
+  // Slab hanging 30px down (auto-step range is 34px, mirroring the ground code).
+  g.solids.push({ x: 160, y: WT_LINE, w: 80, h: 30, top: 1 });
+  for (let i = 0; i < 5; i++) g.update(DT);
+  assert.equal(g.p.on, 1, 'still supported by a ceiling surface');
+  assert.ok(Math.abs(g.p.y - (WT_LINE + 30)) < 1e-9, 'top-of-AABB rests on the slab bottom face');
+  assert.equal(g.p.j, 0, 'ceiling landing preserves jumps');
+  assert.equal(g.mode, 'play');
+});
+
+test('a grounded runner ignores ceiling terrain entirely', () => {
+  const { g } = fresh();
+  sandbox(g, 400);
+  g.solids.push({ x: 150, y: WT_LINE, w: 200, h: 100, top: 1 });   // hanging slab overhead
+  g.pits.push({ x: 150, w: 200, top: 1 });                          // ceiling pit overhead
+  for (let i = 0; i < 60; i++) g.update(DT);
+  assert.equal(g.mode, 'play', 'ceiling terrain never harms the floor runner');
+  assert.equal(g.p.on, 1, 'still grounded');
+  assert.ok(Math.abs((g.p.y + g.p.h) - 448) < 1e-9, 'still at ground level');
+});
+
+test('an inverted runner ignores ground terrain entirely', () => {
+  const { g } = fresh();
+  sandbox(g, 400);
+  g.p.inv = 1; g.p.y = WT_LINE; g.p.vy = 0; g.p.on = 1;
+  g.solids.push({ x: 150, y: 448 - 90, w: 200, h: 90 });   // tall floor slab below
+  g.pits.push({ x: 150, w: 200 });                          // floor pit below
+  for (let i = 0; i < 60; i++) g.update(DT);
+  assert.equal(g.mode, 'play', 'floor pit does not kill a ceiling runner');
+  assert.ok(g.p.y < 100, 'still glued to the ceiling area');
+});
+
+test('ceiling pit removes ceiling support and kills a ceiling runner by drifting past the top', () => {
+  const { g } = fresh();
+  sandbox(g, 400);
+  g.p.inv = 1; g.p.y = WT_LINE; g.p.vy = 0; g.p.on = 1;
+  g.pits.push({ x: 120, w: 300, top: 1 });   // ceiling gap already over the player
+  let drifted = false;
+  for (let i = 0; i < 200; i++) {
+    g.update(DT);
+    if (g.p.y < 0) drifted = true;
+    if (g.mode === 'end') break;
+  }
+  assert.ok(drifted, 'player drifts up through the ceiling gap');
+  assert.equal(g.mode, 'end', 'drifting past the top is lethal');
+  assert.ok(!g.won, 'this is a real death, not a win');
+});
+
+test('ceiling stairs auto-step: an inverted runner descends and re-ascends them without jumping', () => {
+  const { g } = fresh();
+  sandbox(g, 400);
+  g.p.inv = 1; g.p.y = WT_LINE; g.p.vy = 0; g.p.on = 1;
+  g.emit('stairs', 260);
+  const heads = new Set();
+  for (let i = 0; i < 240; i++) {
+    g.update(DT);
+    assert.ok(!(g.p.vy > 0), 'the climb is a step-down, never a downward jump');
+    if (g.p.on) heads.add(Math.round(g.p.y));
+    if (g.mode === 'end') break;
+  }
+  assert.equal(g.mode, 'play', 'ceiling stairs are non-lethal');
+  for (const y of [WT_LINE, WT_LINE + 30, WT_LINE + 60, WT_LINE + 90]) {
+    assert.ok(heads.has(y), `rested with top at ${y} (mirrored step)`);
+  }
+});
+
+test('ceiling terrain scrolls with the world and renders in both motion modes', () => {
+  const { g, env } = fresh();
+  sandbox(g, 400);
+  g.solids.push({ x: 800, y: WT_LINE, w: 80, h: 40, top: 1 });
+  g.pits.push({ x: 1000, w: 140, top: 1 });
+  const sx = g.solids[0].x, px = g.pits[0].x;
+  g.update(DT);
+  assert.ok(Math.abs((sx - g.solids[0].x) - g.speed * DT) < 1e-9, 'ceiling solid scrolls at world speed');
+  assert.ok(Math.abs((px - g.pits[0].x) - g.speed * DT) < 1e-9, 'ceiling pit scrolls at world speed');
+  for (const reduced of [false, true]) {
+    env.reducedMotion(reduced);
+    g.startRun(); g.next = 1e9;
+    g.p.inv = 1;
+    g.emit('plat', 300); g.emit('stairs', 500); g.emit('gap', 700); g.emit('single', 900);
+    g.draw();
+    g.update(DT);
+    g.draw();
+  }
+  env.reducedMotion(false);
+});
+
 
 test('package.py emits a reproducible <=13000B archive of exactly index.html', () => {
   execFileSync('python3', ['scripts/package.py'], { cwd: ROOT });
-  const zip1 = fs.readFileSync(`${ROOT}/dist/1337.zip`);
+  const zip1 = fs.readFileSync(`${ROOT}/dist/F1NA113VE1.zip`);
   assert.ok(zip1.length <= 13000, `archive ${zip1.length} > 13000`);
   execFileSync('python3', ['scripts/package.py'], { cwd: ROOT });
-  const zip2 = fs.readFileSync(`${ROOT}/dist/1337.zip`);
+  const zip2 = fs.readFileSync(`${ROOT}/dist/F1NA113VE1.zip`);
   assert.ok(zip1.equals(zip2), 'archive is not reproducible');
   // Verify contents == source, and the only entry, via python stdlib.
   const out = execFileSync('python3', ['-c',
-    'import zipfile,sys;z=zipfile.ZipFile("dist/1337.zip");n=z.namelist();' +
+    'import zipfile,sys;z=zipfile.ZipFile("dist/F1NA113VE1.zip");n=z.namelist();' +
     'src=open("index.html","rb").read();' +
     'print("OK" if n==["index.html"] and z.read("index.html")==src else "MISMATCH:"+repr(n))',
   ], { cwd: ROOT }).toString().trim();

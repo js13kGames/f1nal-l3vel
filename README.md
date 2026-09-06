@@ -1,10 +1,10 @@
-# 1337
+# F1NA113VE1
 
-133713 is a tiny, rainbow-soaked infinite_-ish_ runner built for the js13kGames challenge.
+F1NA113VE1 is a tiny, rainbow-soaked infinite_-ish_ runner built for the js13kGames challenge.
 
 You play as a green GitHub contribution square racing to avoid downtime, double-jumping over angry GitHub unicorn horns in a procedurally generated world. Each jump leaves a beautiful double rainbow. WHAT DOES IT MEAN!?!?
 
-The game starts absurdly late, at "Level 1337," and only gets faster and more frantic from there. Angry unicorn horns burst from the ground, drop from the ceiling, and occasionally fire across the screen.
+The game starts absurdly late, at the final level, and only gets faster and more frantic from there. Angry unicorn horns burst from the ground, drop from the ceiling, and occasionally fire across the screen.
 
 Make it to the end (106,496 bits), and you win. LOL.
 
@@ -78,10 +78,15 @@ learnable — the joke only lands once:
   coins, platforms, springs, gusts and the spawn cursor all move right together, and you visually slide back
   before being restored. Distance keeps climbing at the normal rate, and nothing extra is spawned.
 - **Wind tunnel** — a telegraphed column with a `!` that turns into a live purple updraft. While it warns, it is
-  completely inert. The moment you enter the live tunnel it **lifts you to the ceiling and flips gravity**: you now
-  fall *upward* and rest against the top. Jumping fires you *downward* away from the ceiling (hold, release-cut and
-  double jump all work sign-aware), and you land back on the ceiling. When the tunnel scrolls past, normal downward
-  gravity simply resumes where you are — no snap back to the floor — and you drift down to the ground.
+  completely inert. The moment you enter a live tunnel it **toggles your gravity mode**: on the floor you get
+  lifted to the ceiling; on the ceiling you get dropped back to the floor. Each live tunnel toggles exactly once
+  and mode persists after you leave — you stay upside down running along the ceiling **until the next wind flips
+  you back**. Jumping is sign-aware in both modes (hold, release-cut and double jump all work), and while inverted
+  the ceiling at `WT` acts as a real floor: you rest against it and land on it. Procedural terrain generated while
+  you are inverted is mirrored to the ceiling — slabs and stairs hang down from the top, gaps become **ceiling
+  pits** that drop you *up* through the world (lethal, like a floor pit), and step-hazard horns spawn as ceiling
+  horns. Ground and ceiling terrain are strictly isolated: floor pits/solids only affect the floor runner and
+  ceiling pits/solids only affect the ceiling runner.
 - **Nearly helpful spring** — a coil that bounces you on a descending top contact, but only about half as high as
   a real jump, and then quietly cuts the rise short. Your double jump is still available afterwards.
 
@@ -113,7 +118,7 @@ README art only). Package the js13k submission archive with the standard library
 python3 scripts/package.py
 ```
 
-This writes the reproducible, ignored artifact `dist/1337.zip` (fixed timestamps + permissions, DEFLATE level 9)
+This writes the reproducible, ignored artifact `dist/F1NA113VE1.zip` (fixed timestamps + permissions, DEFLATE level 9)
 containing **only** `index.html`, and **fails if the archive exceeds 13,000 bytes**.
 
 ### About the byte limit
@@ -149,14 +154,19 @@ shape integrity (no lethal obstacle, no coin), a solid's stable top landing that
 drop, stair mounting, a pit removing ground support and killing by a fall below the world (with support restored on
 the far side), every generated pit width jumpable at min/mid/max speed and rng extremes, pits never overlapping an
 obstacle/solid/pit, terrain moving under hostile/reverse boost and freezing under pause, and a render smoke test in
-both motion modes.
+both motion modes. The **ceiling** side mirrors this coverage: emitting while inverted produces flagged
+ceiling slabs, descending ceiling stairs, ceiling pits and a mirrored step-hazard shape; single/double/triple
+mirrored horns are guaranteed tall enough to hit a ceiling runner; auto-step brings a ceiling runner onto a slab's
+bottom face; ceiling terrain is invisible to a grounded runner and floor terrain is invisible to a ceiling runner;
+a ceiling pit drifts the runner up through the top and kills; ceiling stairs are climbable without jumping; and
+ceiling terrain scrolls and renders in both motion modes.
 
 The step-up horns, flappy gates and wind tunnel each add dedicated coverage: numerical search proving a step-up
 horn is impossible from flat ground, that merely running its steps never clears it, and that only a path which
 jumps onto the steps clears it at every speed, plus a check that an idle runner never rises and is impaled; the gate's aligned
 floor+ceiling pair, real corridor height and threadability at every speed plus a forced-jump death check; and the
-wind tunnel's inert warning, one-time ceiling snap and gravity inversion on entry, sign-aware down-jump with
-hold/double, ceiling landing, natural gravity restore on exit with no floor snap, idle survivability and
+wind tunnel's inert warning, **one toggle per live wind** (up on the first, down on the next), persistent inverted
+mode after exit with no floor snap, sign-aware down-jump with hold/double, ceiling landing, idle survivability and
 restart reset.
 
 ## Theme interpretation
@@ -167,7 +177,7 @@ The theme was rainbows and unicorns. This game combines:
 - A double-rainbow jump (get it? the old double rainbow meme?)
 - Horns as obstacles
 - A green GitHub contribution square
-- Level 1337 and 13
+- A 1,337-bit milestone and 13 KB of everything
 
 ## Disclaimers, fun facts
 
