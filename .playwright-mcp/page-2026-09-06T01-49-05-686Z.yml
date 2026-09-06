@@ -1,0 +1,8 @@
+- generic [ref=e2]:
+  - generic "1337133713371337133713371337133713371337 infinite runner. Landscape only. Press space, up, W, click or tap to jump. Hold to jump higher. Press again in the air to double jump. Collect rainbow bits for a combo bonus. Reach 106,496 bits to win." [ref=e3]
+  - status:
+    - generic: FINAL LEVEL 1337
+    - generic: Leap the unicorn horns. Press / tap to jump, hold to jump higher, press again in the air to double‑jump. Grab rainbow bits for a combo bonus. M or the speaker toggles sound. Landscape only.
+    - generic: "Later on, not everything out there wants to help you: shy platforms, petty gusts, half‑hearted springs and very suspicious pick‑ups."
+    - generic: Press / tap to start
+  - button "Toggle sound" [ref=e4] [cursor=pointer]: 🔊
