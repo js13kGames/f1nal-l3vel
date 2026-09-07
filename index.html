@@ -7,7 +7,7 @@ let dist=0,best=+(localStorage[T]||0),speed=330,next=1000,obs=[],trail=[],bits=[
 let plats=[],ups=[],winds=[],springs=[],solids=[],pits=[],boostT=0,revT=0;
 let bonus=0,combo=0,maxCombo=0,msg='',msgT=0,shake=0,beat=0,seen={},t=0,last=0,unlocked=0;
 const mq=matchMedia('(prefers-reduced-motion: reduce)');let rm=mq.matches;
-const p={x:PX,y:G-24,w:24,h:24,vy:0,on:1,j:0,coy:.1,buf:0,hold:0,ang:0,sx:1,sy:1,tAng:0,rolling:0,ox:0,spr:0,inv:0};
+const p={x:PX,y:G-24,w:24,h:24,vy:0,on:1,j:0,coy:.1,buf:0,hold:0,ang:0,sx:1,sy:1,tAng:0,rolling:0,ox:0,spr:0,inv:0,fall:0};
 function audio(){if(!A)A=new(window.AudioContext||window.webkitAudioContext);if(A.state==='suspended')A.resume()}
 function beep(f=440,d=.05,v=.03,type='square',delay=0){if(!A||muted)return;let o=A.createOscillator(),g=A.createGain(),q=A.currentTime+delay;o.type=type;o.frequency.setValueAtTime(f,q);g.gain.setValueAtTime(v,q);g.gain.exponentialRampToValueAtTime(.0001,q+d);o.connect(g).connect(A.destination);o.start(q);o.stop(q+d)}
 function swoop(a,b,d=.1,v=.04,type='square'){if(!A||muted)return;let o=A.createOscillator(),g=A.createGain(),q=A.currentTime;o.type=type;o.frequency.setValueAtTime(a,q);o.frequency.exponentialRampToValueAtTime(b,q+d);g.gain.setValueAtTime(v,q);g.gain.exponentialRampToValueAtTime(.0001,q+d);o.connect(g).connect(A.destination);o.start(q);o.stop(q+d)}
@@ -27,7 +27,7 @@ addEventListener('resize',checkState);addEventListener('orientationchange',check
 document.addEventListener('visibilitychange',()=>{pageOn=!document.hidden;checkState()});
 addEventListener('blur',()=>{pageOn=0;checkState()});addEventListener('focus',()=>{pageOn=1;checkState()});
 function toggleMute(){muted^=1;MB.setAttribute('aria-pressed',muted?'true':'false');MB.innerHTML=muted?'&#128263;':'&#128266;';say(muted?'MUTED':'SOUND ON',.7)}
-function startRun(){mode='play';won=0;frozen=0;needResume=0;t=dist=0;speed=330;next=980;obs.length=trail.length=bits.length=fx.length=coins.length=plats.length=ups.length=winds.length=springs.length=solids.length=pits.length=0;shake=beat=unlocked=boostT=revT=0;seen={};bonus=combo=maxCombo=0;Object.assign(p,{y:G-p.h,vy:0,on:1,j:0,coy:.1,buf:0,hold:0,ang:0,sx:1,sy:1,tAng:0,rolling:0,ox:0,spr:0,inv:0});say(T+'  \u2022  FINAL LEVEL',1.2)}
+function startRun(){mode='play';won=0;frozen=0;needResume=0;t=dist=0;speed=330;next=980;obs.length=trail.length=bits.length=fx.length=coins.length=plats.length=ups.length=winds.length=springs.length=solids.length=pits.length=0;shake=beat=unlocked=boostT=revT=0;seen={};bonus=combo=maxCombo=0;Object.assign(p,{y:G-p.h,vy:0,on:1,j:0,coy:.1,buf:0,hold:0,ang:0,sx:1,sy:1,tAng:0,rolling:0,ox:0,spr:0,inv:0,fall:0});say(T+'  \u2022  FINAL LEVEL',1.2)}
 function cancelInput(){p.hold=0;p.buf=0;activeId=null}
 function press(){audio();C.focus();if(!landscape()||!pageOn||document.hidden)return;if(needResume){needResume=0;frozen=0;last=performance.now();paint();return}if(mode==='ready'||mode==='end'){startRun();p.buf=.11;p.hold=1;paint();return}p.buf=.11;p.hold=1}
 function release(){let h=p.hold;p.hold=0;if(mode==='play'&&!frozen&&h&&(p.inv?p.vy>0:p.vy<0))p.vy*=.58}
@@ -38,7 +38,7 @@ C.addEventListener('pointerup',e=>{if(e.pointerId!==activeId)return;activeId=nul
 C.addEventListener('pointercancel',e=>{if(e.pointerId===activeId)cancelInput()});
 C.addEventListener('lostpointercapture',e=>{if(e.pointerId===activeId)cancelInput()});
 MB.addEventListener('pointerdown',e=>{e.stopPropagation();e.preventDefault();toggleMute()});
-function jump(){let d=p.inv?-1:1;if(p.on||p.coy>0){p.vy=-520*d;p.on=0;p.coy=0;p.j=1;p.sx=.78;p.sy=1.28;swoop(280,680,.09,.045);beep(920,.035,.018,'sine',.045)}else if(p.j<2){p.vy=-500*d;p.j=2;p.sx=.68;p.sy=1.42;swoop(440,1200,.12,.055);beep(1550,.045,.022,'sine',.055);if(!rm)for(let i=0;i<14;i++)bits.push([PX+12,p.y+12,(Math.random()-.5)*220,(Math.random()-.5)*220,Math.random()*360,.5])}}
+function jump(){if(p.fall)return;let d=p.inv?-1:1;if(p.on||p.coy>0){p.vy=-520*d;p.on=0;p.coy=0;p.j=1;p.sx=.78;p.sy=1.28;swoop(280,680,.09,.045);beep(920,.035,.018,'sine',.045)}else if(p.j<2){p.vy=-500*d;p.j=2;p.sx=.68;p.sy=1.42;swoop(440,1200,.12,.055);beep(1550,.045,.022,'sine',.055);if(!rm)for(let i=0;i<14;i++)bits.push([PX+12,p.y+12,(Math.random()-.5)*220,(Math.random()-.5)*220,Math.random()*360,.5])}}
 function ob(x,w,h,type,warn,mark){obs.push({x,w,h,type,y:type==='c'?0:type==='f'?-h:G-h,vy:0,warn:warn||0,mark:mark||0,vx:type==='s'?-(speed+140):0})}
 function addCoin(cx){coins.push({x:cx,y:343,got:0,miss:0})}
 function emit(id,base){
@@ -79,14 +79,18 @@ function update(dt){
  let liveW=null;
  for(let q of winds){q.x-=ws*dt;if(q.warn>0)q.warn-=dt;else if(p.x+p.w>q.x+8&&p.x<q.x+q.w-8)liveW=q}
  winds=winds.filter(q=>q.x+q.w>-60);
- if(liveW&&!liveW.hit){liveW.hit=1;p.inv^=1;p.y=p.inv?WT:G-p.h;p.vy=0;p.on=1;p.j=0;p.coy=.1;say(p.inv?'CEILING RUN  \u2022  STAY UP':'FLOOR AGAIN  \u2022  DOWN YOU GO',.9);swoop(180,760,.22,.045,'triangle')}
+ if(liveW&&!liveW.hit&&!p.fall){liveW.hit=1;p.inv^=1;p.y=p.inv?WT:G-p.h;p.vy=0;p.on=1;p.j=0;p.coy=.1;say(p.inv?'CEILING RUN  \u2022  STAY UP':'FLOOR AGAIN  \u2022  DOWN YOU GO',.9);swoop(180,760,.22,.045,'triangle')}
  if(p.spr>0){p.spr-=dt;if(p.spr<=0&&p.vy<0){p.vy*=.72;beep(240,.05,.014,'triangle')}}
  p.vy+=1450*dt*(p.inv?-1:1);let py=p.y;p.y+=p.vy*dt;let pit=0,cpit=0;for(let s of pits)if(s.x<PX+12&&s.x+s.w>PX+12){s.top?cpit=1:pit=1}
- if(p.inv){let ct=null;if(p.vy<0)for(let q of solids)if(q.top&&onBottom(q,py)){let b=q.y+q.h;if(ct===null||b>ct)ct=b}if(ct!==null){p.y=ct;p.vy=0;p.on=1;p.j=0;p.coy=.1}else if(!cpit&&p.y<=WT){p.y=WT;p.vy=0;p.on=1;p.j=0;p.coy=.1}else{p.on=0;if(p.y<-40){die();return}}}
+ if(p.fall){p.on=0}
+ else if(p.inv){let ct=null;if(p.vy<0)for(let q of solids)if(q.top&&onBottom(q,py)){let b=q.y+q.h;if(ct===null||b>ct)ct=b}if(ct!==null){p.y=ct;p.vy=0;p.on=1;p.j=0;p.coy=.1}else if(!cpit&&p.y<=WT){p.y=WT;p.vy=0;p.on=1;p.j=0;p.coy=.1}else p.on=0}
  else if(!pit&&p.y>=G-p.h){if(!p.on){let q=Math.PI/2,k=p.ang/q,fk=Math.round(k);p.tAng=Math.abs(k-fk)<1e-6?fk*q:(Math.floor(k)+1)*q;p.rolling=1;if(p.vy>260){p.sx=1.25;p.sy=.72;swoop(210,105,.06,.026,'triangle');beep(120,.035,.014,'sine',.025);if(!rm){shake=Math.min(5,p.vy/120);for(let i=0;i<4;i++)bits.push([PX+12,G,(Math.random()-.5)*90,-Math.random()*90,110,.28])}}}p.y=G-p.h;p.vy=0;p.on=1;p.j=0}else{p.on=0;if(p.vy>0){
   for(let q of solids)if(onTop(q,py)){p.y=q.y-p.h;p.vy=0;p.on=1;p.j=0;p.coy=.1}
   for(let q of plats)if(onTop(q,py)){p.y=q.y-p.h;p.vy=0;p.on=1;p.j=0;p.coy=.1}
-  for(let q of springs)if(onTop(q,py)){p.y=q.y-p.h;p.vy=-360;p.j=1;p.spr=.17;q.c=.18;p.sx=1.18;p.sy=.82;swoop(300,540,.1,.032,'triangle');say('BOING\u2026 ISH',.6)}}if(p.y>H+40){die();return}}
+  for(let q of springs)if(onTop(q,py)){p.y=q.y-p.h;p.vy=-360;p.j=1;p.spr=.17;q.c=.18;p.sx=1.18;p.sy=.82;swoop(300,540,.1,.032,'triangle');say('BOING\u2026 ISH',.6)}}}
+ // Once through a surface, keep falling even after the pit scrolls away.
+ if(!p.on&&(p.inv?p.y<WT:p.y>G-p.h))p.fall=1;
+ if(p.inv?p.y<-40:p.y>H+40){die();return}
  if(p.on&&!p.inv){let ft=p.y+p.h,to=null;for(let q of solids)if(!q.top&&p.x+p.w>q.x&&p.x<q.x+q.w){let up=ft-q.y;if(up>0&&up<=34&&(to===null||q.y<to))to=q.y}if(to!==null){p.y=to-p.h;p.vy=0;p.j=0;p.coy=.1}}
  if(p.on&&p.inv){let to=null;for(let q of solids)if(q.top&&p.x+p.w>q.x&&p.x<q.x+q.w){let b=q.y+q.h,d=b-p.y;if(d>0&&d<=34&&(to===null||b>to))to=b}if(to!==null){p.y=to;p.vy=0;p.j=0;p.coy=.1}}
  p.sx+=(1-p.sx)*dt*18;p.sy+=(1-p.sy)*dt*18;

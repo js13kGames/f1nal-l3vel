@@ -1145,10 +1145,89 @@ test('ground support is restored on the far side of a pit', () => {
   const { g } = fresh();
   sandbox(g, 400);
   // Narrow pit whose right (far) edge is already past the player's centre.
-  g.pits.push({ x: PX_CENTER - 200, w: 210 });
+  g.pits.push({ x: PX_CENTER - 200, w: 190 });
   for (let i = 0; i < 60; i++) g.update(DT);
   assert.equal(g.mode, 'play', 'player over solid ground survives');
   assert.equal(g.p.on, 1, 'stays grounded once the gap has scrolled past');
+});
+
+test('unjumped gaps cause a continuous fatal fall even after scrolling past either surface', () => {
+  for (const inv of [0, 1]) for (const sv of [330, 460, 590])
+    for (const rv of [0, 0.999]) for (const boost of [0, 1])
+      for (const dt of [DT, 0.032]) {
+        const { g, env } = fresh();
+        sandbox(g, sv);
+        env.setRandom(() => rv);
+        g.p.inv = inv; g.p.y = inv ? 48 : G_GROUND;
+        g.boostT = boost;
+        g.emit('gap', PX_CENTER + 30);
+        const pit = g.pits[0], dir = inv ? -1 : 1;
+        const label = `inv=${inv}, speed=${sv}, width=${pit.w}, boost=${boost}, dt=${dt}`;
+        let falling = false, passed = false, fallFrames = 0;
+        for (let i = 0; i < 120 && g.mode === 'play'; i++) {
+          const y = g.p.y;
+          g.update(dt);
+          if ((g.p.y - (inv ? 48 : G_GROUND)) * dir > 0) falling = true;
+          if (falling) {
+            fallFrames++;
+            assert.ok((g.p.y - y) * dir > 0, `never snaps back: ${label}`);
+            assert.equal(g.p.on, 0, `no surface reattachment: ${label}`);
+            if (pit.x + pit.w < PX_CENTER) passed = true;
+          }
+        }
+        assert.ok(fallFrames > 5, `visible fall, not instant death: ${label}`);
+        if (sv === 590 && boost) assert.ok(passed, `gap scrolled away before death: ${label}`);
+        assert.equal(g.mode, 'end', `gap must kill: ${label}`);
+        assert.equal(g.won, 0);
+        assert.ok(inv ? g.p.y < -40 : g.p.y > 580, `existing world boundary death: ${label}`);
+      }
+});
+
+test('pit fall cannot be rescued by jumping or wind and restart restores normal jumping', () => {
+  for (const inv of [0, 1]) for (const wind of [false, true]) {
+    const { g } = fresh();
+    sandbox(g, 590);
+    g.p.inv = inv; g.p.y = inv ? 48 : G_GROUND;
+    g.emit('gap', PX_CENTER - 1);
+    g.update(DT);
+    assert.equal(g.mode, 'play', 'first subpixel through the surface is not instant death');
+    assert.equal(g.p.on, 0);
+    g.pits.length = 0;
+    if (wind) g.winds.push({ x: 150, w: 1000, warn: 0, hit: 0 });
+    for (let i = 0; i < 120 && g.mode === 'play'; i++) {
+      const y = g.p.y;
+      g.press(); g.update(DT); g.release();
+      assert.equal(g.p.inv, inv, 'wind cannot teleport a falling player to safety');
+      assert.ok(inv ? g.p.y < y : g.p.y > y, 'coyote/double/buffer input cannot reverse the fall');
+    }
+    assert.equal(g.mode, 'end', 'fall remains fatal despite rescue attempts');
+    g.press(); g.update(DT);
+    assert.equal(g.mode, 'play', 'restart begins a fresh run');
+    assert.equal(g.p.inv, 0);
+    assert.equal(g.p.j, 1);
+    assert.ok(g.p.vy < 0 && g.p.y < G_GROUND, 'restart clears the fall and first press jumps');
+  }
+});
+
+test('jumping over gaps on either surface lands normally and refreshes jumps', () => {
+  for (const inv of [0, 1]) for (const sv of [330, 460, 590]) for (const rv of [0, 0.999]) {
+    const { g, env } = fresh();
+    sandbox(g, sv);
+    env.setRandom(() => rv);
+    g.p.inv = inv; g.p.y = inv ? 48 : G_GROUND;
+    g.emit('gap', PX_CENTER + 30);
+    g.press();
+    for (let i = 0; i < 120; i++) {
+      g.update(DT);
+      assert.equal(g.mode, 'play', `jump clears gap: inv=${inv}, speed=${sv}, rng=${rv}`);
+      assert.ok(inv ? g.p.y >= 48 : g.p.y <= G_GROUND, 'never falls through the surface');
+    }
+    assert.equal(g.p.on, 1, 'landed beyond the gap');
+    assert.equal(g.p.y, inv ? 48 : G_GROUND);
+    assert.equal(g.p.j, 0, 'landing refreshed jumps');
+    g.release(); g.press(); g.update(DT);
+    assert.ok(inv ? g.p.vy > 0 : g.p.vy < 0, 'can jump again after landing');
+  }
 });
 
 // Gap fairness: reachable by jumping at every speed / rng extreme.
