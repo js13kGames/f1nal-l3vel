@@ -1,5 +1,9 @@
 # F1NA113VE1
 
+[![Made for JS13K](https://img.shields.io/badge/Made%20for-JS13K-E5243B)](https://js13kgames.com/)
+[![Made with GitHub Copilot](https://img.shields.io/badge/Made%20with-GitHub%20Copilot-8957E5?logo=githubcopilot&logoColor=white)](https://github.com/features/copilot)
+[![Made with GPT-6 Astra](https://img.shields.io/badge/Made%20with-ChatGPT%206%20Astra-10A37F)](https://chatgpt.com/)
+
 F1NA113VE1 is a tiny, rainbow-soaked infinite_-ish_ runner built for the js13kGames challenge.
 
 You play as a green GitHub contribution square racing to avoid downtime, double-jumping over angry GitHub unicorn horns in a procedurally generated world. Each jump leaves a beautiful double rainbow. WHAT DOES IT MEAN!?!?
