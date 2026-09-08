@@ -9,15 +9,13 @@ Created for [js13kGames](https://js13kgames.com/) competition.
 
 <p align="center">
   <a href="https://htmlpreview.github.io/?https://github.com/leereilly/rainbow-runner/blob/HEAD/index.html">
-    <img src="https://64.media.tumblr.com/1b7e13deed101abcb589e52a10f73201/tumblr_pv5623ZzA71qciqqno5_540.gif" alt="F1NA113VE1 cover art" width="540">
+    <img src="assets/gameplay.gif" alt="F1NA113VE1 cover art" width="540">
   </a>
 </p>
 
 Race a green GitHub contribution square through the final level, double-jumping over angry unicorn horns and leaving double rainbows as you chase 106,496 bits of survival.
 
 ### [🌈 Play now →](https://htmlpreview.github.io/?https://github.com/leereilly/rainbow-runner/blob/HEAD/index.html)
-
-![F1NA113VE1 — animated gameplay preview](assets/gameplay.gif)
 
 **Controls:** <kbd>Space</kbd> / <kbd>↑</kbd> / <kbd>W</kbd> / click / tap to jump · hold to jump higher · press again in midair to double-jump · <kbd>M</kbd> or the speaker button to mute
 
