@@ -1,138 +1,71 @@
+[![js13kGames](https://img.shields.io/badge/js13kGames-2026-E5243B?style=flat-square)](https://js13kgames.com/)
+[![GitHub Copilot](https://img.shields.io/badge/Made_with-GitHub_Copilot-8957E5?style=flat-square&logo=githubcopilot&logoColor=white)](https://github.com/features/copilot)
+![GPT-6 Astra](https://img.shields.io/badge/Powered_by-GPT--6_Astra-10A37F?style=flat-square)
+
+Created for [js13kGames](https://js13kgames.com/) competition.
+**Theme:** Rainbows and Unicorns. **Constraint:** web only, <= 13KB.
+
 # F1NA113VE1
 
-[![Made for JS13K](https://img.shields.io/badge/Made%20for-JS13K-E5243B)](https://js13kgames.com/)
-[![Made with GitHub Copilot](https://img.shields.io/badge/Made%20with-GitHub%20Copilot-8957E5?logo=githubcopilot&logoColor=white)](https://github.com/features/copilot)
-[![Made with GPT-6 Astra](https://img.shields.io/badge/Made%20with-ChatGPT%206%20Astra-10A37F)](https://chatgpt.com/)
-
-F1NA113VE1 is a tiny, rainbow-soaked infinite_-ish_ runner built for the js13kGames challenge.
-
-You play as a green GitHub contribution square racing to avoid downtime, double-jumping over angry GitHub unicorn horns in a procedurally generated world. Each jump leaves a beautiful double rainbow. WHAT DOES IT MEAN!?!?
-
-The game starts absurdly late, at the final level, and only gets faster and more frantic from there. Angry unicorn horns burst from the ground, drop from the ceiling, and occasionally fire across the screen.
-
-Make it to the end (106,496 bits), and you win. LOL.
-
 <p align="center">
-  <img src="assets/gameplay.gif" alt="Seamless custom-level loop of the green contribution square jumping over rainbow unicorn horns and pits" width="720">
+  <a href="https://htmlpreview.github.io/?https://github.com/leereilly/rainbow-runner/blob/HEAD/index.html">
+    <img src="https://64.media.tumblr.com/1b7e13deed101abcb589e52a10f73201/tumblr_pv5623ZzA71qciqqno5_540.gif" alt="F1NA113VE1 cover art" width="540">
+  </a>
 </p>
 
-## How to play
+Race a green GitHub contribution square through the final level, double-jumping over angry unicorn horns and leaving double rainbows as you chase 106,496 bits of survival.
 
-Read the on-screen briefing, then press or tap to start:
+### [🌈 Play now →](https://htmlpreview.github.io/?https://github.com/leereilly/rainbow-runner/blob/HEAD/index.html)
 
-- **Start:** your first press/tap both starts the run and performs the first jump.
-- **Jump:** `Space` / `↑` / `W` / click / tap.
-- **Jump higher:** hold the press. Release early for a shorter hop.
-- **Double jump:** press *again while in the air*. You get two jumps, refreshed on landing.
-- **Mute:** press `M`, or tap the speaker button (top-right). The mute button never starts a run or jumps.
+![F1NA113VE1 — animated gameplay preview](assets/gameplay.gif)
 
-Coyote-time and input-buffering give you a little leeway when timing jumps.
+**Controls:** <kbd>Space</kbd> / <kbd>↑</kbd> / <kbd>W</kbd> / click / tap to jump · hold to jump higher · press again in midair to double-jump · <kbd>M</kbd> or the speaker button to mute
 
-### Rainbow bits (combo bonus)
+Your first press starts the run and jumps. Movement is automatic. On mobile, play in landscape;
+rotating to portrait or leaving the window pauses the game. Tap to resume, then tap again to jump.
 
-Glowing rainbow **bits** float along some jump arcs. Grabbing them builds a **combo** and adds a small
-**bonus** shown in the HUD, tracked separately from distance and progress toward the finish.
-Missing a bit resets your combo. Restarting clears your bits, bonus and combo.
+## Features
 
-### Fair, speed-aware obstacles
+- Speed-aware procedural obstacles, platforms, stairs and pits, with warning markers and forgiving jump timing.
+- Double-rainbow trails, angry GitHub unicorn horns and a green contribution-square hero, with reduced-motion support.
+- Collectible rainbow bits build combos and bonus points as the run gets faster; survive to 106,496 bits to win.
+- Gravity-flipping wind tunnels, reverse boosts, retreating platforms and nearly helpful springs keep you on your toes.
 
-Obstacle spacing scales with your speed to leave room between hazards. Tall pillars, ceiling drops, falling horns,
-saw blades, step-up horns and gates show a solid warning marker before they appear. Tests simulate the game physics
-to check that each pattern can be cleared at minimum, middle and maximum speed.
+## Development
 
-- **Step-up horns:** tall horns with a short staircase before them. Jump onto the steps, then leap from the top.
-  The first step is too high to walk onto, and the horn is too tall to clear with a double jump from flat ground.
-- **Flappy gates:** a floor horn and a ceiling horn with a narrow corridor between them, à la Flappy Bird.
-  Jump high enough to clear the bottom horn while staying under the top one. A full double jump clips the ceiling.
+Requires a modern web browser and Python 3.7+ for local serving and packaging.
+Regression tests additionally require Node.js 18+.
 
-### Procedural terrain: platforms, steps & pits
-
-Beyond the horn obstacles, the world builds itself from Geometry-Dash-style terrain that unlocks as you get faster:
-
-- **Solid slabs:** fixed blocks with a green top edge. Landing on top refreshes both jumps, and their sides are safe
-  to touch.
-- **Stair steps:** a short ascending run of solid blocks. Ride up them or double-jump over.
-- **Ground pits:** gaps in the floor marked with red edges. Jump across to the runway on the far side.
-  Falling through a pit kills you, even if you try to jump or catch a wind tunnel on the way down.
-
-Terrain follows the same spacing, boost and pause rules as the other obstacles.
-
-### Things that are not on your side
-
-Five occasional hazards unlock as you progress. Each gives you a warning before it activates:
-
-- **Bashful platform:** a small rainbow platform with a `^_^` face. Landing on it refreshes both jumps, but as
-  you get close it turns `>_<`, retreats and drops away. You can clear every hazard without it.
-- **Hostile power-up:** a red spiked star with a pulsing `!`. Collecting it briefly speeds up obstacles while
-  your distance and score continue at their usual rate.
-- **Reverse boost:** a blue star marked `⇄`. Collecting it briefly scrolls the world backwards.
-  Distance keeps climbing at the normal rate.
-- **Wind tunnel:** a column marked with a `!` that turns into a purple updraft when active. Entering it flips
-  gravity once, sending you from floor to ceiling or back again. You stay on that surface until the next tunnel.
-  Hold, release and double-jump controls work in both directions. While inverted, new slabs, stairs and horns
-  hang from the ceiling, and ceiling pits send you falling up through the world. Terrain affects runners on
-  its own surface.
-- **Nearly helpful spring:** a coil that bounces you when you land on it, about half as high as a regular jump.
-  Your double jump is still available afterwards.
-
-## Mobile & landscape
-
-The game uses a **16:9** world in landscape, with support for dynamic viewport height (`dvh`) and safe-area insets.
-Touch controls support press, hold, release and double-jump.
-
-**Landscape is required.** Rotating to portrait pauses the game and shows a rotate prompt.
-Return to landscape and tap to resume from where you left off. The resume tap only unpauses the game;
-tap again to jump. Switching tabs or leaving the window also pauses the game.
-
-## Reduced motion
-
-The game follows your system's reduced-motion preference (`prefers-reduced-motion: reduce`), including changes
-made during a run. This disables screen shake, flashing, rainbow trails and particles, the player's spin, and
-background animation. Gameplay physics and timing stay the same, and hazard warnings use solid markers.
-
-## Build / packaging
-
-The whole game is a single self-contained `index.html`. The files in `assets/` are for the README.
-Package the js13k submission archive with Python's standard library:
+The game is a single self-contained `index.html`; no dependencies need installing.
+The files in `assets/` are for this README and are not included in the submission.
 
 ```sh
+# Run locally, then open http://localhost:8000
+python3 -m http.server 8000 --bind 127.0.0.1
+
+# Build the submission
 python3 scripts/package.py
-```
 
-This writes `dist/F1NA113VE1.zip` containing `index.html`, using fixed timestamps and permissions and DEFLATE level 9
-for reproducible output. The archive is ignored by Git. Packaging fails if it exceeds **13,000 bytes**.
-
-### About the byte limit
-
-The js13k submission limit is **13,312 bytes zipped**. This project's **13,000-byte** packaging limit leaves a
-little room to spare.
-
-## Regression tests
-
-Deterministic tests run the production code through Node's built-in test runner and `vm`:
-
-```sh
+# Run regression tests
 node --test scripts/test.mjs
 ```
 
-Coverage includes controls, jump timing, combos, scoring, mute, touch input, pause and resume, reduced motion,
-and the packaging limit.
+Build output: `dist/F1NA113VE1.zip`.
 
-Obstacle and terrain tests exercise spacing and clearability across speeds, pit widths at random-number
-extremes, slab landings, stair climbing, step-up horns and flappy gates. They also cover platform retreats,
-boosts, springs, gravity flips, mirrored ceiling terrain, rendering and run resets.
+The reproducible archive contains only `index.html`. Packaging fails above **13,000 bytes**,
+leaving a little room below the competition's **13,312-byte zipped** limit.
+Regression tests cover controls, scoring, pause and resume, reduced motion, obstacle clearability,
+terrain, gravity flips and the packaging limit.
 
-## Theme interpretation
+## Contributing
 
-The theme was rainbows and unicorns. This game combines:
+Contributions welcome! This was a short-lived competition project, so ongoing
+maintenance isn't guaranteed. Feel free to fork it and make it your own.
 
-- GitHub's angry unicorn from its 500 pages
-- A double-rainbow jump (get it? the old double rainbow meme?)
-- Horns as obstacles
-- A green GitHub contribution square
-- A 1,337-bit milestone and 13 KB of everything
+## License
 
-## Disclaimers, fun facts
+[MIT](LICENSE).
 
-🤓 Every commit in this repo starts with `133713`
-📜 More time was spent writing the README than the game.
+## Fun fact
+
+🤓 The commit-SHA challenge: make every commit hash start with `133713`.
