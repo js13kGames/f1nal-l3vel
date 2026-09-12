@@ -63,7 +63,3 @@ maintenance isn't guaranteed. Feel free to fork it and make it your own.
 ## License
 
 [MIT](LICENSE).
-
-## Fun fact
-
-🤓 The commit-SHA challenge: make every commit hash start with `133713`.
